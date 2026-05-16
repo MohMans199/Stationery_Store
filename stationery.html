@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>الأدوات المكتبية - زيروكس المساحة</title>
+    
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ===== إعدادات متقدمة (مؤشر ماوس، شريط تقدم) ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; cursor: none; }
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #3b82f6, #2dd4bf); border-radius: 10px; }
+        body { font-family: 'Cairo', sans-serif; background: #f8fafc; color: #0f172a; overflow-x: hidden; line-height: 1.6; }
+        
+        .custom-cursor { position: fixed; top: 0; left: 0; width: 25px; height: 25px; border: 2px solid #3b82f6; border-radius: 50%; pointer-events: none; z-index: 99999; transform: translate(-50%, -50%); transition: width 0.3s, height 0.3s, background-color 0.3s; mix-blend-mode: difference; }
+        .custom-cursor.hovered { width: 60px; height: 60px; background-color: rgba(59, 130, 246, 0.8); border-color: transparent; }
+        #progress-bar { position: fixed; top: 0; left: 0; height: 5px; background: linear-gradient(90deg, #3b82f6, #2dd4bf); width: 0%; z-index: 9999; transition: width 0.1s linear; box-shadow: 0 0 15px #3b82f6; }
+
+        /* شريط التنقل الزجاجي */
+        .navbar { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(20px); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; position: sticky; top: 0; z-index: 1100; box-shadow: 0 10px 40px rgba(0,0,0,0.2); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .navbar .logo { font-size: 30px; font-weight: 900; background: linear-gradient(135deg, #3b82f6, #2dd4bf, #3b82f6); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; color: transparent; animation: shine 3s linear infinite; }
+        @keyframes shine { to { background-position: 200% center; } }
+        .navbar .links a { color: #e2e8f0; text-decoration: none; margin-right: 25px; font-weight: 700; transition: 0.3s; font-size: 17px; position: relative; padding: 5px 0; }
+        .navbar .links a:hover { color: #3b82f6; text-shadow: 0 0 12px rgba(59,130,246,0.8); }
+        .navbar .links a::after { content: ''; position: absolute; bottom: -2px; right: 0; width: 0; height: 3px; background: #3b82f6; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); border-radius: 5px; }
+        .navbar .links a:hover::after { width: 100%; }
+
+        /* واجهة القسم (هيرو) */
+        .stationery-hero { position: relative; background: linear-gradient(115deg, rgba(15,23,42,0.92) 0%, rgba(30,41,59,0.88) 100%), url('https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1920&q=80') center/cover fixed; color: white; padding: 160px 20px; text-align: center; overflow: hidden; }
+        .hero-particles .particle { position: absolute; background: rgba(59,130,246,0.15); border-radius: 50%; animation: floatParticle 12s infinite linear; pointer-events: none; }
+        @keyframes floatParticle { 0% { transform: translateY(100vh) scale(0) rotate(0deg); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateY(-200px) scale(2) rotate(180deg); opacity: 0; } }
+        .hero-content { position: relative; z-index: 2; }
+        .stationery-hero h1 { font-size: 60px; font-weight: 900; margin-bottom: 20px; text-shadow: 0 15px 40px rgba(0,0,0,0.8); letter-spacing: -2px; }
+        .stationery-hero p { font-size: 22px; opacity: 0.9; max-width: 800px; margin: 0 auto; line-height: 1.8; }
+        .back-home-btn { display: inline-flex; align-items: center; gap: 10px; margin-top: 35px; padding: 15px 35px; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); color: white; text-decoration: none; border-radius: 50px; font-weight: 800; font-size: 18px; transition: 0.4s; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .back-home-btn:hover { background: #3b82f6; border-color: #3b82f6; transform: translateY(-5px); box-shadow: 0 15px 35px rgba(59,130,246,0.4); }
+
+        /* شريط العروض المتحرك */
+        .offers-ticker { background-color: #f1c40f; color: #1a252f; padding: 12px; font-weight: bold; font-size: 16px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); overflow: hidden; white-space: nowrap; }
+        .offers-ticker marquee { display: inline-block; width: 100%; }
+
+        /* أزرار الفلترة */
+        .filter-container { margin: 40px 0 20px; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
+        .filter-btn { background: white; color: #2c3e50; border: 2px solid #2c3e50; padding: 10px 25px; border-radius: 30px; font-weight: bold; cursor: pointer; transition: 0.3s; font-family: inherit; font-size: 16px; }
+        .filter-btn.active, .filter-btn:hover { background: #11998e; color: white; border-color: #11998e; box-shadow: 0 4px 10px rgba(17, 153, 142, 0.3); }
+
+        /* كروت المنتجات المطورة (دمج التصميمين) */
+        .section-padding { padding: 60px 20px; }
+        .container { max-width: 1350px; margin: 0 auto; display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; }
+        
+        .item-card { background: rgba(255,255,255,0.95); backdrop-filter: blur(5px); width: 310px; border-radius: 25px; padding: 30px 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.04); transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); text-align: right; border-bottom: 5px solid #11998e; position: relative; overflow: hidden; display: flex; flex-direction: column; }
+        .item-card::before { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(to right, transparent, rgba(17,153,142,0.1), transparent); transform: skewX(-25deg); transition: 0.7s; }
+        .item-card:hover::before { left: 200%; }
+        .item-card:hover { transform: translateY(-12px); box-shadow: 0 30px 60px rgba(17,153,142,0.15); border-bottom-color: #f1c40f; }
+        
+        .item-icon { width: 70px; height: 70px; background: #f8fafc; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; color: #11998e; font-size: 32px; transition: 0.4s; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        .item-card:hover .item-icon { background: linear-gradient(135deg, #11998e, #38ef7d); color: white; transform: rotateY(180deg); }
+        
+        .item-card h3 { color: #1e293b; font-size: 22px; font-weight: 900; margin-bottom: 10px; }
+        .item-card p { color: #64748b; margin-bottom: 15px; font-size: 14px; line-height: 1.5; }
+        .price { font-size: 24px; font-weight: 900; color: #f97316; margin: 10px 0; background: #fff7ed; padding: 5px 15px; border-radius: 12px; display: inline-block; align-self: flex-start; }
+        
+        .badge { position: absolute; top: 15px; left: -30px; background: #e74c3c; color: white; padding: 5px 30px; font-size: 11px; font-weight: bold; transform: rotate(-45deg); box-shadow: 0 2px 4px rgba(0,0,0,0.2); z-index: 1; width: 120px; text-align: center; }
+        .badge-new { background: #3498db; }
+        
+        .order-btn { display: flex; justify-content: center; align-items: center; gap: 10px; background: #25D366; color: white; text-decoration: none; padding: 14px; border-radius: 12px; font-weight: 800; font-size: 15px; transition: 0.3s; margin-top: 15px; box-shadow: 0 10px 20px rgba(37,211,102,0.2); }
+        .order-btn:hover { background: #128C7E; transform: translateY(-3px); box-shadow: 0 15px 25px rgba(37,211,102,0.4); }
+
+        /* صندوق اللستة المخصصة */
+        .custom-list-section { background: linear-gradient(135deg, #1a252f, #2c3e50); color: white; padding: 45px 35px; border-radius: 25px; width: 90%; max-width: 900px; margin: 60px auto; box-shadow: 0 20px 40px rgba(0,0,0,0.2); text-align: right; }
+        .custom-list-section h3 { color: #f1c40f; font-size: 26px; margin-bottom: 15px; }
+        .custom-list-section p { font-size: 16px; margin-bottom: 20px; opacity: 0.9; }
+        .custom-textarea { width: 100%; height: 120px; border-radius: 15px; border: none; padding: 15px; font-size: 16px; font-family: inherit; resize: vertical; outline: none; margin-bottom: 15px; color: #2c3e50; background: #fff; }
+        .send-list-btn { display: inline-flex; align-items: center; gap: 10px; background-color: #f1c40f; color: #1a252f; text-decoration: none; padding: 12px 30px; border-radius: 40px; font-weight: bold; font-size: 16px; transition: 0.3s; cursor: pointer; border: none; }
+        .send-list-btn:hover { background-color: #f39c12; transform: translateY(-3px); }
+
+        /* الفوتر */
+        .footer { background: linear-gradient(to top, #020617, #0f172a); color: #cbd5e1; padding: 60px 20px 30px; text-align: center; margin-top: 40px; }
+        .footer p { margin-bottom: 10px; font-size: 16px; }
+
+        /* زر واتساب عائم */
+        .floating-wa { position: fixed; bottom: 30px; right: 30px; background-color: #25D366; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 9999; animation: floatBounce 2s infinite ease-in-out; text-decoration: none; transition: 0.3s; }
+        .floating-wa:hover { transform: scale(1.1); background-color: #128C7E; }
+        @keyframes floatBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+        /* استجابة للشاشات الصغيرة */
+        @media (max-width: 768px) {
+            .stationery-hero h1 { font-size: 36px; }
+            .stationery-hero p { font-size: 18px; }
+            .navbar { flex-direction: column; text-align: center; }
+            .navbar .links a { margin: 0 12px; }
+            .filter-container { gap: 10px; }
+            .filter-btn { padding: 6px 15px; font-size: 13px; }
+            .item-card { width: 100%; max-width: 320px; }
+            .custom-list-section { padding: 30px 20px; }
+            .custom-list-section h3 { font-size: 20px; }
+        }
+        
+        @media (max-width: 480px) {
+            .stationery-hero { padding: 100px 15px; }
+            .back-home-btn { padding: 10px 20px; font-size: 14px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="custom-cursor" id="customCursor"></div>
+<div id="progress-bar"></div>
+
+<div class="navbar" data-aos="fade-down">
+    <div class="logo">زيروكس المساحة</div>
+    <div class="links">
+        <a href="index.html" class="hover-target">الرئيسية</a>
+        <a href="printing.html" class="hover-target">الطباعة والتصوير</a>
+        <a href="services.html" class="hover-target">خدمات إلكترونية</a>
+        <a href="stationery.html" class="hover-target" style="color: #3b82f6;">الأدوات المكتبية</a>
+    </div>
+</div>
+
+<div class="stationery-hero">
+    <div class="hero-particles">
+        <div class="particle" style="width: 50px; height: 50px; left: 15%; animation-duration: 12s;"></div>
+        <div class="particle" style="width: 30px; height: 30px; left: 60%; animation-duration: 16s; animation-delay: 2s;"></div>
+        <div class="particle" style="width: 80px; height: 80px; left: 85%; animation-duration: 14s; animation-delay: 4s;"></div>
+    </div>
+    <div class="hero-content">
+        <h1 data-aos="fade-down">قسم الأدوات المكتبية</h1>
+        <p data-aos="fade-up">كل ما تحتاجه لمكتبك ودراستك في مكان واحد بأفضل الأسعار والجودة العالية.</p>
+        <a href="index.html" class="back-home-btn hover-target" data-aos="zoom-in"><i class="fas fa-arrow-right"></i> العودة للرئيسية</a>
+    </div>
+</div>
+
+<div class="offers-ticker">
+    <marquee behavior="scroll" direction="right" scrollamount="6">
+        🎉 خصم 10% للطلبة على جميع الأدوات الهندسية! | 🔥 اشتري 3 رزم ورق واحصل على دليفري مجاني في منطقة المساحة | 🎒 تشكيلة جديدة من الشنط والأدوات المدرسية وصلت الآن!
+    </marquee>
+</div>
+
+<div class="filter-container" data-aos="fade-up">
+    <button class="filter-btn active" onclick="filterItems('all')">كل المنتجات</button>
+    <button class="filter-btn" onclick="filterItems('best')">🌟 الأكثر مبيعاً</button>
+    <button class="filter-btn" onclick="filterItems('eng')">📐 أدوات هندسية وفنون</button>
+    <button class="filter-btn" onclick="filterItems('office')">📁 مستلزمات شركات</button>
+</div>
+
+<!-- المنتجات الأكثر مبيعاً -->
+<div class="section-padding" id="cat-best" style="padding-top: 0;">
+    <div class="container">
+        <div class="item-card" data-aos="fade-up" data-item-type="best">
+            <div class="badge">الأكثر طلباً</div>
+            <div class="item-icon"><i class="fas fa-pen-fancy"></i></div>
+            <h3>أقلام جاف (طقم 3 ألوان)</h3>
+            <p>أزرق، أسود، أحمر جودة عالية</p>
+            <div class="price">15 ج.م</div>
+            <a href="https://wa.me/201101339148?text=السلام عليكم، عايز أطلب: أقلام جاف (طقم 3 ألوان)" class="order-btn hover-target" target="_blank"><i class="fab fa-whatsapp"></i> اطلب دلوقتي</a>
+        </div>
+
+        <div class="item-card" data-aos="fade-up" data-aos-delay="100" data-item-type="best">
+            <div class="badge badge-new">خصم خاص</div>
+            <div class="item-icon"><i class="fas fa-file-alt"></i></div>
+            <h3>رزمة ورق A4</h3>
+            <p>80 جرام، 500 ورقة ممتازة للطباعة</p>
+            <div class="price">250 ج.م</div>
+            <a href="https://wa.me/201101339148?text=السلام عليكم، عايز أطلب: رزمة ورق A4" class="order-btn hover-target" target="_blank"><i class="fab fa-whatsapp"></i> اطلب دلوقتي</a>
+        </div>
+
+        <div class="item-card" data-aos="fade-up" data-aos-delay="200" data-item-type="best">
+            <div class="item-icon"><i class="fas fa-print"></i></div>
+            <h3>دباسة مكتب</h3>
+            <p>دباسة معدنية قوية للمستندات</p>
+            <div class="price">45 ج.م</div>
+            <a href="https://wa.me/201101339148?text=السلام عليكم، عايز أطلب: دباسة مكتب" class="order-btn hover-target" target="_blank"><i class="fab fa-whatsapp"></i> اطلب دلوقتي</a>
+        </div>
+        
+        <div class="item-card" data-aos="fade-up" data-aos-delay="300" data-item-type="best">
+            <div class="item-icon"><i class="fas fa-calculator"></i></div>
+            <h3>آلة حاسبة علمية كاسيو</h3>
+            <p>أصلية بضمان شامل للطلبة والمهندسين</p>
+            <div class="price">يبدأ من 450 ج.م</div>
+            <a href="https://wa.me/201101339148?text=السلام عليكم، عايز أسأل عن: الآلة الحاسبة العلمية" class="order-btn hover-target" target="_blank"><i class="fab fa-whatsapp"></i> اطلب دلوقتي</a>
+        </div>
+    </div>
+</div>
+
+<!-- أدوات المهندسين والفنون -->
+<div class="section-padding" id="cat-eng" style="padding-top: 0;">
+    <div class="container">
+        <div class="item-card" style="border-bottom-color: #3498db;" data-aos="zoom-in" data-item-type="eng">
+            <div class="item-icon" style="color: #3498db;"><i class="fas fa-ruler-combined"></i></div>
+            <h3>طقم مساطر هندسية</h3>
+            <p>مساطر مرنة ومتينة لجميع التخصصات الهندسية</p>
+            <div class="price">35 ج.م</div>
+            <a href="https://wa.me/201101339148?text=السلام عليكم، عايز أطلب: طقم مساطر هندسية" class="order-btn hover-target" target="_blank"><i class="fab fa-whatsapp"></i> اطلب دلوقتي</a>
+        </div>
+
+        <div class="item-card" style="border-bottom-color: #3498db;" data-aos="zoom-in" data-aos-delay="100" data-item-type="eng">
+            <div class="item-icon" style="color: #3498db;"><i class="fas fa-palette"></i></div>
+            <h3>كراسة رسم (اسكتش) A3</h3>
+            <p>ورق كانسون ثقيل مخصص للرسم والألوان</p>
+            <div class="price">55 ج.م</div>
+            <a href="https://wa.me/201101339148?text=السلام عليكم، عايز أطلب: اسكتش رسم A3" class="order-btn hover-target" target="_blank"><i class="fab fa-whatsapp"></i> اطلب دلوقتي</a>
+        </div>
+
+        <div class="item-card" style="border-bottom-color: #3498db;" data-aos="zoom-in" data-aos-delay="200" data-item-type="eng">
+            <div class="item-icon" style="color: #3498db;"><i class="fas fa-paint-brush"></i></div>
+            <h3>أقلام تحبير فايبر كاستل</h3>
+            <p>طقم أقلام تحبير سنون متعددة المقاسات</p>
+            <div class="price">85 ج.م</div>
+            <a href="https://wa.me/201101339148?text=السلام عليكم، عايز أطلب: طقم أقلام تحبير" class="order-btn hover-target" target="_blank"><i class="fab fa-whatsapp"></i> اطلب دلوقتي</a>
+        </div>
+    </div>
+</div>
+
+<!-- مستلزمات تنظيم الشركات -->
+<div class="section-padding" id="cat-office" style="padding-top: 0;">
+    <div class="container">
+        <div class="item-card" style="border-bottom-color: #f1c40f;" data-aos="fade-right" data-item-type="office">
+            <div class="item-icon" style="color: #f1c40f;"><i class="fas fa-folder-open"></i></div>
+            <h3>فايل كبسولة بلاستيك</h3>
+            <p>لحفظ الورق والمستندات بألوان شفافة وجذابة</p>
+            <div class="price">10 ج.م</div>
+            <a href="https://wa.me/201101339148?text=السلام عليكم، عايز أطلب: فايل كبسولة" class="order-btn hover-target" target="_blank"><i class="fab fa-whatsapp"></i> اطلب دلوقتي</a>
+        </div>
+
+        <div class="item-card" style="border-bottom-color: #f1c40f;" data-aos="fade-up" data-item-type="office">
+            <div class="item-icon" style="color: #f1c40f;"><i class="fas fa-sitemap"></i></div>
+            <h3>منظم مكتب معدني (أورجنايزر)</h3>
+            <p>لحفظ الأقلام والدبابيس وترتيب المكتب</p>
+            <div class="price">65 ج.م</div>
+            <a href="https://wa.me/201101339148?text=السلام عليكم، عايز أطلب: منظم مكتب معدني" class="order-btn hover-target" target="_blank"><i class="fab fa-whatsapp"></i> اطلب دلوقتي</a>
+        </div>
+
+        <div class="item-card" style="border-bottom-color: #f1c40f;" data-aos="fade-left" data-item-type="office">
+            <div class="item-icon" style="color: #f1c40f;"><i class="fas fa-paste"></i></div>
+            <h3>دوسيه بلاستيك حرف U</h3>
+            <p>عبوة 100 حافظة بلاستيكية شفافة</p>
+            <div class="price">75 ج.م</div>
+            <a href="https://wa.me/201101339148?text=السلام عليكم، عايز أطلب: عبوة دوسيه حرف U" class="order-btn hover-target" target="_blank"><i class="fab fa-whatsapp"></i> اطلب دلوقتي</a>
+        </div>
+    </div>
+</div>
+
+<!-- صندوق اللستة المخصصة -->
+<div class="custom-list-section" data-aos="zoom-in">
+    <h3><i class="fas fa-clipboard-list"></i> مش لاقي أدواتك؟ جهّز لستتك المخصصة هنا</h3>
+    <p>اكتب أسماء الأدوات أو الكميات اللي محتاجها بره القائمة دي، وإحنا هنجهزهالك في فرع المساحة فوراً!</p>
+    <textarea id="custom-items-text" class="custom-textarea" placeholder="اكتب هنا مثلاً: كشكول سلك 100 ورقة، قلم روترنج هندسي، صمغ يو هو..."></textarea>
+    <button onclick="sendCustomStationeryList()" class="send-list-btn hover-target"><i class="fab fa-whatsapp"></i> إرسال اللستة عبر الواتساب</button>
+</div>
+
+<a href="https://wa.me/201101339148" class="floating-wa hover-target" target="_blank" title="تواصل معنا على الواتساب">
+    <i class="fab fa-whatsapp"></i>
+</a>
+
+<div class="footer">
+    <p>📍 زيروكس المساحة - ميدان المساحة، الدقي، الجيزة</p>
+    <p>📞 للدعم والاستفسار السريع: 01101339148 | 📧 xerox_elmesaha@yahoo.com</p>
+    <p style="font-size: 14px; opacity: 0.6; margin-top: 20px;">كل اللي تحتاجه، موجود عندنا في <strong>زيروكس المساحة</strong></p>
+</div>
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    AOS.init({ duration: 800, once: false, mirror: true });
+
+    // المؤشر المخصص
+    const cursor = document.getElementById('customCursor');
+    document.addEventListener('mousemove', e => { cursor.style.left = e.clientX + 'px'; cursor.style.top = e.clientY + 'px'; });
+    document.querySelectorAll('.hover-target, button, a').forEach(target => {
+        target.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
+        target.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
+    });
+
+    // شريط التقدم
+    window.onscroll = () => { 
+        let wScroll = document.body.scrollTop || document.documentElement.scrollTop; 
+        let height = document.documentElement.scrollHeight - document.documentElement.clientHeight; 
+        document.getElementById("progress-bar").style.width = (wScroll / height) * 100 + "%"; 
+    };
+
+    // فلترة المنتجات
+    function filterItems(category) {
+        const buttons = document.querySelectorAll('.filter-btn');
+        buttons.forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+
+        const bestContainer = document.getElementById('cat-best');
+        const engContainer = document.getElementById('cat-eng');
+        const officeContainer = document.getElementById('cat-office');
+        const allCards = document.querySelectorAll('.item-card');
+
+        if (category === 'all') {
+            bestContainer.style.display = 'block';
+            engContainer.style.display = 'block';
+            officeContainer.style.display = 'block';
+            allCards.forEach(card => card.style.display = 'flex');
+        } else {
+            bestContainer.style.display = 'none';
+            engContainer.style.display = 'none';
+            officeContainer.style.display = 'none';
+
+            if (category === 'best') bestContainer.style.display = 'block';
+            if (category === 'eng') engContainer.style.display = 'block';
+            if (category === 'office') officeContainer.style.display = 'block';
+
+            allCards.forEach(card => {
+                if (card.getAttribute('data-item-type') === category) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+    }
+
+    // إرسال اللستة المخصصة عبر الواتساب
+    function sendCustomStationeryList() {
+        const userText = document.getElementById('custom-items-text').value;
+        if (!userText.trim()) {
+            alert('من فضلك اكتب طلباتك أولاً جوه الصندوق لكي نجهزها لك!');
+            return;
+        }
+        const encodedText = encodeURIComponent("السلام عليكم، دي لستة أدوات مكتبية مخصصة محتاجها من فرع المساحة:\n" + userText);
+        window.open(`https://wa.me/201101339148?text=${encodedText}`, '_blank');
+    }
+</script>
+</body>
+</html>

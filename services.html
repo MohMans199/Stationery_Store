@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الخدمات الإلكترونية - زيروكس المساحة</title>
+    
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; background-color: #f4f7f6; overflow-x: hidden; }
+        
+        /* شريط التنقل الموحد */
+        .navbar { background-color: #1a252f; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; color: white; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.2);}
+        .navbar .logo { font-size: 24px; font-weight: bold; color: #f1c40f; }
+        .navbar .links a { color: #ecf0f1; text-decoration: none; margin-right: 20px; font-weight: bold; transition: 0.3s;}
+        .navbar .links a:hover { color: #3498db; }
+        
+        /* واجهة الخدمات الإلكترونية */
+        .services-hero { 
+            background: linear-gradient(rgba(44, 62, 80, 0.85), rgba(26, 37, 47, 0.95)), url('https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat; 
+            color: white; padding: 100px 20px; text-align: center; position: relative;
+        }
+        .services-hero h1 { font-size: 44px; margin-bottom: 15px; text-shadow: 0 4px 15px rgba(52, 152, 219, 0.6); }
+        .services-hero p { font-size: 20px; opacity: 0.9; max-width: 700px; margin: 0 auto; line-height: 1.6; }
+        .back-home-btn { display: inline-block; margin-top: 25px; padding: 12px 30px; background-color: #f1c40f; color: #1a252f; text-decoration: none; border-radius: 50px; font-weight: bold; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .back-home-btn:hover { background-color: #f39c12; transform: translateY(-3px); }
+
+        /* شريط الثقة والأمان (ابتكار جديد) */
+        .trust-banner { background-color: #27ae60; color: white; padding: 15px; font-size: 16px; font-weight: bold; display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .trust-banner div { display: flex; align-items: center; gap: 8px; }
+
+        /* الأقسام العامة */
+        .section-padding { padding: 70px 20px; }
+        .section-title { color: #2c3e50; margin-bottom: 40px; font-size: 34px; font-weight: bold; position: relative; display: inline-block; }
+        .section-title::after { content: ''; width: 50%; height: 4px; background: #3498db; position: absolute; bottom: -10px; left: 25%; border-radius: 2px; }
+        
+        /* شبكة الخدمات المبتكرة */
+        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; width: 90%; max-width: 1200px; margin: 0 auto; }
+        
+        .premium-card { background: white; border-radius: 20px; padding: 35px 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); transition: 0.4s; text-align: right; border-right: 5px solid #3498db; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between;}
+        .premium-card::before { content: ''; position: absolute; top: 0; right: 0; width: 100%; height: 100%; background: linear-gradient(to left, rgba(52,152,219,0.05), transparent); z-index: 0; }
+        .premium-card:hover { transform: translateY(-10px); box-shadow: 0 15px 40px rgba(0,0,0,0.12); border-right-color: #f1c40f; }
+        
+        .card-content { position: relative; z-index: 1; }
+        .card-icon { width: 70px; height: 70px; background: #f4f7f6; border-radius: 15px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; color: #3498db; font-size: 32px; transition: 0.4s; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .premium-card:hover .card-icon { background: #3498db; color: white; transform: rotateY(180deg); }
+        
+        .premium-card h3 { color: #2c3e50; font-size: 24px; margin-bottom: 15px; font-weight: bold; }
+        .premium-card p { color: #666; margin-bottom: 20px; font-size: 15px; line-height: 1.6; }
+        
+        /* أزرار الكروت المزدوجة */
+        .card-buttons { display: flex; gap: 10px; position: relative; z-index: 1; margin-top: 15px; }
+        .service-action-btn { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: #25D366; color: white; text-decoration: none; padding: 10px; border-radius: 8px; font-weight: bold; transition: 0.3s; font-size: 14px; border: none; cursor: pointer; }
+        .service-action-btn:hover { background: #128C7E; }
+        .details-btn { flex: 1; background: #2c3e50; }
+        .details-btn:hover { background: #1a252f; }
+
+        /* المودالات (النوافذ المنبثقة للتفاصيل) */
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); backdrop-filter: blur(8px); }
+        .modal-content { background-color: #fff; margin: 5% auto; padding: 30px; border-radius: 15px; width: 90%; max-width: 600px; text-align: right; position: relative; animation: fadeInUp 0.4s; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
+        .close-btn { color: #7f8c8d; position: absolute; left: 20px; top: 20px; font-size: 30px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .close-btn:hover { color: #e74c3c; }
+        .details-list { list-style: none; padding: 0; margin-top: 20px; }
+        .details-list li { padding: 12px 0; border-bottom: 1px solid #eee; color: #444; font-size: 16px; display: flex; align-items: center; gap: 10px; }
+        .details-list li i { color: #3498db; }
+
+        /* خطوات العمل (How it works) */
+        .steps-section { background: #1a252f; color: white; padding: 70px 20px; }
+        .steps-section .section-title { color: white; }
+        .steps-section .section-title::after { background: #f1c40f; }
+        .steps-container { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; width: 90%; margin: 40px auto 0; }
+        .step-box { text-align: center; width: 220px; }
+        .step-number { width: 60px; height: 60px; background: #f1c40f; color: #1a252f; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; margin: 0 auto 20px; border: 4px solid rgba(255,255,255,0.2); }
+        .step-box h4 { font-size: 20px; margin-bottom: 10px; }
+        .step-box p { font-size: 14px; color: #bdc3c7; line-height: 1.6; }
+
+        /* الفوتر */
+        .footer { background-color: #111820; color: #ecf0f1; padding: 40px 20px; text-align: center; }
+        .whatsapp-float { position: fixed; bottom: 30px; right: 30px; background-color: #25D366; color: white; width: 60px; height: 60px; border-radius: 50%; text-align: center; font-size: 35px; line-height: 60px; box-shadow: 2px 2px 15px rgba(0,0,0,0.2); z-index: 9999; animation: floatBounce 2s infinite ease-in-out; transition: 0.3s; }
+        .whatsapp-float:hover { background-color: #128C7E; transform: scale(1.1); animation: none; }
+        @keyframes floatBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <div class="logo">زيروكس المساحة</div>
+        <div class="links">
+            <a href="index.html">الرئيسية</a>
+            <a href="printing.html">الطباعة والتصوير</a>
+            <a href="stationery.html">الأدوات المكتبية</a>
+            <a href="services.html" style="color: #3498db;">خدمات إلكترونية</a>
+        </div>
+    </div>
+
+    <div class="services-hero">
+        <h1 data-aos="fade-down">الخدمات الإلكترونية والإدارية</h1>
+        <p data-aos="fade-up" data-aos-delay="100">حلول متكاملة تنجز أعمالك بدقة واحترافية، من الصياغة القانونية وحتى الدعم التقني والسوفت وير.</p>
+        <a href="index.html" class="back-home-btn" data-aos="zoom-in" data-aos-delay="200"><i class="fas fa-home"></i> العودة للرئيسية</a>
+    </div>
+
+    <div class="trust-banner" data-aos="fade-up">
+        <div><i class="fas fa-user-shield"></i> سرية تامة لبياناتك</div>
+        <div><i class="fas fa-clock"></i> إنجاز فوري للخدمات</div>
+        <div><i class="fas fa-check-circle"></i> مراجعة دقيقة قبل التسليم</div>
+    </div>
+
+    <div class="section-padding">
+        <h2 class="section-title" data-aos="fade-up">خدماتنا المتقدمة</h2>
+        
+        <div class="services-grid">
+            
+            <div class="premium-card" data-aos="fade-up">
+                <div class="card-content">
+                    <div class="card-icon"><i class="fas fa-file-signature"></i></div>
+                    <h3>صياغة الخطابات والوثائق</h3>
+                    <p>كتابة وصياغة احترافية للطلبات والخطابات الموجهة للجهات الإدارية، الحكومية، والكيانات الدبلوماسية بأسلوب رسمي دقيق.</p>
+                </div>
+                <div class="card-buttons">
+                    <button class="service-action-btn details-btn" onclick="openModal('modal-docs')"><i class="fas fa-list"></i> التفاصيل</button>
+                    <a href="https://wa.me/201101339148?text=أريد%20خدمة%20صياغة%20خطاب%20أو%20طلب%20رسمي" class="service-action-btn" target="_blank"><i class="fab fa-whatsapp"></i> اطلب فوراً</a>
+                </div>
+            </div>
+
+            <div class="premium-card" data-aos="fade-up" data-aos-delay="100" style="border-right-color: #9b59b6;">
+                <div class="card-content">
+                    <div class="card-icon" style="color: #9b59b6;"><i class="fas fa-mobile-alt"></i></div>
+                    <h3>سوفت وير وصيانة برمجية</h3>
+                    <p>حلول برمجية متقدمة للموبايلات، استعادة النظام، تفليش الرومات، وحل مشاكل السوفت وير المعقدة ببرامج متخصصة.</p>
+                </div>
+                <div class="card-buttons">
+                    <button class="service-action-btn details-btn" onclick="openModal('modal-software')"><i class="fas fa-list"></i> التفاصيل</button>
+                    <a href="https://wa.me/201101339148?text=أريد%20استفسار%20عن%20خدمات%20سوفت%20وير%20الموبايل" class="service-action-btn" target="_blank"><i class="fab fa-whatsapp"></i> اطلب فوراً</a>
+                </div>
+            </div>
+
+            <div class="premium-card" data-aos="fade-up" data-aos-delay="150" style="border-right-color: #f1c40f;">
+                <div class="card-content">
+                    <div class="card-icon" style="color: #f1c40f;"><i class="fas fa-id-card"></i></div>
+                    <h3>تصميم السير الذاتية (CV)</h3>
+                    <p>تصميم وكتابة سيرة ذاتية احترافية باللغتين العربية والإنجليزية تتوافق مع أنظمة الشركات (ATS) لضمان قبولك.</p>
+                </div>
+                <div class="card-buttons">
+                    <button class="service-action-btn details-btn" onclick="openModal('modal-cv')"><i class="fas fa-list"></i> التفاصيل</button>
+                    <a href="https://wa.me/201101339148?text=أريد%20عمل%20سيرة%20ذاتية%20(CV)%20احترافية" class="service-action-btn" target="_blank"><i class="fab fa-whatsapp"></i> اطلب فوراً</a>
+                </div>
+            </div>
+
+            <div class="premium-card" data-aos="fade-up" data-aos-delay="200" style="border-right-color: #e74c3c;">
+                <div class="card-content">
+                    <div class="card-icon" style="color: #e74c3c;"><i class="fas fa-file-pdf"></i></div>
+                    <h3>سكانر وتغليف أرشيفي</h3>
+                    <p>سحب المستندات ضوئياً (سكانر) بدقة عالية وتحويلها لـ PDF، بالإضافة لخدمات التغليف الحراري والتكعيب الحلزوني والسلك.</p>
+                </div>
+                <div class="card-buttons">
+                    <button class="service-action-btn details-btn" onclick="openModal('modal-scan')"><i class="fas fa-list"></i> التفاصيل</button>
+                    <a href="https://wa.me/201101339148?text=أريد%20خدمة%20تغليف%20أو%20سكانر" class="service-action-btn" target="_blank"><i class="fab fa-whatsapp"></i> اطلب فوراً</a>
+                </div>
+            </div>
+
+            <div class="premium-card" data-aos="fade-up" data-aos-delay="300" style="border-right-color: #27ae60;">
+                <div class="card-content">
+                    <div class="card-icon" style="color: #27ae60;"><i class="fas fa-globe"></i></div>
+                    <h3>خدمات إلكترونية وحكومية</h3>
+                    <p>مساعدتك في التقديم على الوظائف أونلاين، تنسيق الكليات، استخراج الشهادات، والبحث وجمع المعلومات لعمل الأبحاث.</p>
+                </div>
+                <div class="card-buttons">
+                    <button class="service-action-btn details-btn" onclick="openModal('modal-gov')"><i class="fas fa-list"></i> التفاصيل</button>
+                    <a href="https://wa.me/201101339148?text=أريد%20إنجاز%20خدمة%20إلكترونية" class="service-action-btn" target="_blank"><i class="fab fa-whatsapp"></i> اطلب فوراً</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="modal-docs" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('modal-docs')">×</span>
+            <h3 style="color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px;">تفاصيل صياغة الخطابات</h3>
+            <ul class="details-list">
+                <li><i class="fas fa-check-circle"></i> كتابة طلبات نقل وانتداب للموظفين.</li>
+                <li><i class="fas fa-check-circle"></i> صياغة شكاوى وتظلمات للجهات الحكومية.</li>
+                <li><i class="fas fa-check-circle"></i> خطابات موجهة للسفارات والقنصليات.</li>
+                <li><i class="fas fa-check-circle"></i> تنسيق العقود والاتفاقيات.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="modal-software" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('modal-software')">×</span>
+            <h3 style="color: #2c3e50; border-bottom: 2px solid #9b59b6; padding-bottom: 10px;">خدمات السوفت وير</h3>
+            <ul class="details-list">
+                <li><i class="fas fa-check-circle"></i> تفليش رومات أصلية لمعظم أجهزة الأندرويد.</li>
+                <li><i class="fas fa-check-circle"></i> فك وإزالة حماية حسابات جوجل (FRP).</li>
+                <li><i class="fas fa-check-circle"></i> تحديث أو استرجاع نظام التشغيل.</li>
+                <li><i class="fas fa-check-circle"></i> نقل ونسخ احتياطي للبيانات (Backup).</li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="modal-cv" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('modal-cv')">×</span>
+            <h3 style="color: #2c3e50; border-bottom: 2px solid #f1c40f; padding-bottom: 10px;">باقات تصميم الـ CV</h3>
+            <ul class="details-list">
+                <li><i class="fas fa-check-circle"></i> CV عربي أو إنجليزي بتصميم عصري (قالب جاهز).</li>
+                <li><i class="fas fa-check-circle"></i> تصميم مخصص متوافق مع أنظمة الشركات (ATS).</li>
+                <li><i class="fas fa-check-circle"></i> كتابة الـ Cover Letter للتقديم على الوظائف.</li>
+                <li><i class="fas fa-check-circle"></i> تعديل وتحديث بيانات سيرة ذاتية قديمة.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="modal-scan" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('modal-scan')">×</span>
+            <h3 style="color: #2c3e50; border-bottom: 2px solid #e74c3c; padding-bottom: 10px;">قائمة التغليف والسكانر</h3>
+            <ul class="details-list">
+                <li><i class="fas fa-check-circle"></i> سكانر بجودة عالية جداً للوثائق والصور وإرسالها PDF.</li>
+                <li><i class="fas fa-check-circle"></i> تغليف حراري للمستندات الهامة لحمايتها من التلف.</li>
+                <li><i class="fas fa-check-circle"></i> تكعيب سلك للملازم والمذكرات الجامعية.</li>
+                <li><i class="fas fa-check-circle"></i> تجميع ودمج ملفات الـ PDF أو تقسيمها.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="modal-gov" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('modal-gov')">×</span>
+            <h3 style="color: #2c3e50; border-bottom: 2px solid #27ae60; padding-bottom: 10px;">الخدمات الإلكترونية</h3>
+            <ul class="details-list">
+                <li><i class="fas fa-check-circle"></i> حجز مواعيد وإدخال بيانات على المواقع الحكومية.</li>
+                <li><i class="fas fa-check-circle"></i> تسجيل تنسيق الجامعات والكليات.</li>
+                <li><i class="fas fa-check-circle"></i> التقديم الإلكتروني للوظائف ومسابقات التعيين.</li>
+                <li><i class="fas fa-check-circle"></i> عمل أبحاث مدرسية وجامعية منسقة وجاهزة للطباعة.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="steps-section">
+        <h2 class="section-title" data-aos="zoom-in">إزاي تنجز خدمتك أونلاين؟</h2>
+        <div class="steps-container">
+            <div class="step-box" data-aos="fade-up">
+                <div class="step-number">1</div>
+                <h4>تواصل معانا</h4>
+                <p>ابعتلنا تفاصيل الخدمة اللي محتاجها أو الملفات على الواتساب.</p>
+            </div>
+            <div class="step-box" data-aos="fade-up" data-aos-delay="100">
+                <div class="step-number">2</div>
+                <h4>التنفيذ والمراجعة</h4>
+                <p>بنبداً شغل فوراً وبنراجع معاك الخطوات عشان نضمن دقة التنفيذ.</p>
+            </div>
+            <div class="step-box" data-aos="fade-up" data-aos-delay="200">
+                <div class="step-number">3</div>
+                <h4>الاستلام</h4>
+                <p>هتستلم ملفك على الواتساب أو تيجي الفرع تستلمه مطبوع ومغلف جاهز.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>📍 الجيزة - ميدان المساحة (الدقي) | 📞 01101339148</p>
+        <p style="font-size: 14px; opacity: 0.6; margin-top: 10px;">&copy; 2026 مركز منصور المتكامل للخدمات الإلكترونية والطباعة.</p>
+    </div>
+
+    <a href="https://wa.me/201101339148" class="whatsapp-float" target="_blank" title="تواصل معنا فوراً">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 1000, once: false, mirror: true });
+
+        // دوال التحكم في النوافذ المنبثقة
+        function openModal(modalId) { 
+            document.getElementById(modalId).style.display = "block"; 
+        }
+        function closeModal(modalId) { 
+            document.getElementById(modalId).style.display = "none"; 
+        }
+        window.onclick = function(event) { 
+            if (event.target.classList.contains('modal')) { 
+                event.target.style.display = "none"; 
+            } 
+        }
+    </script>
+</body>
+</html>

@@ -2,316 +2,398 @@
 <html dir="rtl" lang="ar">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>زيروكس المساحة - مركز منصور المتكامل</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>زيروكس المساحة | مركز منصور المتكامل – أكبر متجر للطباعة والأدوات المكتبية في الجيزة</title>
+    <meta name="description" content="أسرع خدمات الطباعة والتصوير، أحدث ماكينات زيروكس وريكو وHP، أحبار أصلية، وتوصيل سريع. تسوق أونلاين واستمتع بالعروض الحصرية.">
+    
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
     <style>
-        /* التنسيقات العامة */
-        :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #3498db;
-            --accent-color: #f1c40f;
-            --success-color: #27ae60;
-            --text-light: #ffffff;
-            --bg-color: #f4f4f4;
-        }
+        /* ===== إعدادات أساسية ومؤشر الماوس ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; cursor: none; /* إخفاء الماوس العادي */ }
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #3b82f6, #2dd4bf); border-radius: 10px; }
+        body { font-family: 'Cairo', 'Segoe UI', sans-serif; background: #f8fafc; color: #0f172a; overflow-x: hidden; line-height: 1.5; }
+        
+        /* مؤشر الماوس المخصص (ابتكار عالمي) */
+        .custom-cursor { position: fixed; top: 0; left: 0; width: 20px; height: 20px; border: 2px solid #f1c40f; border-radius: 50%; pointer-events: none; z-index: 99999; transform: translate(-50%, -50%); transition: width 0.2s, height 0.2s, background-color 0.2s; mix-blend-mode: difference; }
+        .custom-cursor.hovered { width: 50px; height: 50px; background-color: rgba(241, 196, 15, 0.5); border-color: transparent; }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--bg-color);
-            color: #333;
-            line-height: 1.6;
-        }
+        /* شريط تقدم القراءة */
+        #progress-bar { position: fixed; top: 0; left: 0; height: 4px; background: linear-gradient(90deg, #f1c40f, #e67e22, #f1c40f); width: 0%; z-index: 9999; transition: width 0.08s linear; box-shadow: 0 0 10px #f1c40f; }
+        
+        /* ===== شريط التنقل ===== */
+        .navbar { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(16px); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; position: sticky; top: 0; z-index: 1100; border-bottom: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 30px rgba(0,0,0,0.15); transition: 0.3s; }
+        .navbar .logo { font-size: 28px; font-weight: 800; background: linear-gradient(135deg, #f1c40f, #e67e22, #f1c40f); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; color: transparent; animation: shine 3s linear infinite; letter-spacing: -0.5px; }
+        @keyframes shine { to { background-position: 200% center; } }
+        .navbar .links a { color: #e2e8f0; text-decoration: none; margin-right: 24px; font-weight: 600; transition: 0.3s; font-size: 16px; position: relative; padding: 5px 0;}
+        .navbar .links a:hover { color: #f1c40f; text-shadow: 0 0 8px rgba(241,196,15,0.6); }
+        .navbar .links a::after { content: ''; position: absolute; bottom: 0; right: 0; width: 0; height: 2px; background: #f1c40f; transition: 0.3s; }
+        .navbar .links a:hover::after { width: 100%; }
+        .nav-icons { display: flex; gap: 20px; align-items: center; }
+        .nav-icon { position: relative; color: white; font-size: 24px; transition: 0.3s; }
+        .nav-icon:hover { color: #f1c40f; transform: scale(1.1) translateY(-2px); }
+        .cart-count, .wish-count { position: absolute; top: -8px; right: -12px; background: linear-gradient(135deg, #ef4444, #dc2626); color: white; font-size: 11px; font-weight: bold; padding: 2px 6px; border-radius: 30px; min-width: 20px; text-align: center; box-shadow: 0 4px 10px rgba(239,68,68,0.5); transition: 0.2s; }
+        
+        /* ===== هيرو متقدم مع تأثير الكتابة ===== */
+        .hero { position: relative; background: linear-gradient(115deg, rgba(15,23,42,0.92) 0%, rgba(30,41,59,0.88) 100%), url('https://images.unsplash.com/photo-1586281380349-632531db7ed4?auto=format&fit=crop&w=1920&q=80') center/cover fixed; color: white; padding: 180px 20px; text-align: center; overflow: hidden; }
+        .hero-particles .particle { position: absolute; background: rgba(255,255,255,0.1); border-radius: 50%; animation: floatParticle 12s infinite linear; pointer-events: none; }
+        @keyframes floatParticle { 0% { transform: translateY(100vh) scale(0) rotate(0deg); opacity: 0; } 50% { opacity: 0.6; } 100% { transform: translateY(-100px) scale(1.5) rotate(180deg); opacity: 0; } }
+        .hero h1 { font-size: 68px; font-weight: 900; margin-bottom: 20px; text-shadow: 0 10px 30px rgba(0,0,0,0.6); letter-spacing: -1px; animation: fadeDown 1s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+        
+        /* تأثير الكتابة الآلية */
+        .typewriter-container { font-size: 32px; font-weight: 600; color: #f1c40f; margin-bottom: 20px; height: 40px; }
+        .typewriter-text { border-left: 3px solid #f1c40f; padding-left: 5px; animation: blinkCursor 0.7s infinite; }
+        @keyframes blinkCursor { 0%, 100% { border-color: transparent; } 50% { border-color: #f1c40f; } }
 
-        /* شريط التنقل */
-        .navbar {
-            background-color: var(--primary-color);
-            color: var(--text-light);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        }
-
-        .navbar .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--accent-color);
-        }
-
-        .navbar nav a {
-            color: var(--text-light);
-            text-decoration: none;
-            margin-right: 1.5rem;
-            transition: 0.3s;
-        }
-
-        .navbar nav a:hover {
-            color: var(--accent-color);
-        }
-
-        /* قسم الترحيب الرئيسي */
-        .hero {
-            background: linear-gradient(rgba(44, 62, 80, 0.8), rgba(52, 152, 219, 0.8)), 
-                        url('https://images.unsplash.com/photo-1588702547919-26089e690ecc?auto=format&fit=crop&q=80&w=1000');
-            background-size: cover;
-            background-position: center;
-            color: var(--text-light);
-            padding: 100px 20px;
-            text-align: center;
-        }
-
-        .hero h1 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            color: var(--accent-color);
-        }
-
-        .hero p {
-            font-size: 1.2rem;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        /* الحاويات */
-        .container {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-        }
-
-        .section-title {
-            text-align: center;
-            margin-bottom: 3rem;
-            position: relative;
-        }
-
-        .section-title::after {
-            content: '';
-            width: 80px;
-            height: 4px;
-            background: var(--secondary-color);
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        /* كروت الخدمات */
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-
-        .card {
-            background: white;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            transition: 0.3s;
-        }
-
-        .card:hover {
-            transform: translateY(-10px);
-        }
-
-        .card-content {
-            padding: 1.5rem;
-            text-align: center;
-        }
-
-        .card h2 {
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-        }
-
-        .btn-whatsapp {
-            background-color: var(--success-color);
-            color: white;
-            padding: 0.8rem 1.5rem;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: bold;
-            text-decoration: none;
-            display: inline-block;
-            transition: 0.3s;
-        }
-
-        .btn-whatsapp:hover {
-            background-color: #219150;
-            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.4);
-        }
-
-        /* جدول الأسعار */
-        .price-table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            margin-top: 2rem;
-        }
-
-        .price-table th, .price-table td {
-            padding: 1rem;
-            border: 1px solid #eee;
-            text-align: center;
-        }
-
-        .price-table th {
-            background-color: var(--primary-color);
-            color: var(--text-light);
-        }
-
-        .price-table tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        /* قسم الخريطة */
-        .map-container {
-            margin-top: 4rem;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        }
-
-        /* الفوتر */
-        .footer {
-            background-color: var(--primary-color);
-            color: var(--text-light);
-            padding: 4rem 2rem 1rem;
-            margin-top: 4rem;
-        }
-
-        .footer-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .footer-item h3 {
-            color: var(--accent-color);
-            margin-bottom: 1.5rem;
-        }
-
-        .footer-bottom {
-            text-align: center;
-            margin-top: 3rem;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            font-size: 0.9rem;
-        }
+        .hero p { font-size: 22px; opacity: 0.9; max-width: 800px; margin: 0 auto; line-height: 1.8; animation: fadeUp 1s ease 0.3s both; }
+        .online-indicator { display: inline-flex; align-items: center; gap: 12px; background: rgba(37,211,102,0.15); backdrop-filter: blur(10px); padding: 12px 30px; border-radius: 60px; margin-top: 40px; border: 1px solid rgba(46,204,113,0.4); animation: fadeIn 1s ease 0.6s both; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .online-dot { width: 14px; height: 14px; background: #2ecc71; border-radius: 50%; animation: pulse 1.8s infinite; }
+        @keyframes fadeDown { from { opacity: 0; transform: translateY(-50px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes pulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(46,204,113,0.8); } 70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(46,204,113,0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(46,204,113,0); } }
+        
+        /* شرائط الماركات */
+        .brands-marquee { background: white; padding: 30px 0; overflow: hidden; border-bottom: 1px solid #e2e8f0; position: relative; }
+        .brands-marquee::before, .brands-marquee::after { content: ''; position: absolute; top: 0; width: 150px; height: 100%; z-index: 2; }
+        .brands-marquee::before { left: 0; background: linear-gradient(to right, white, transparent); }
+        .brands-marquee::after { right: 0; background: linear-gradient(to left, white, transparent); }
+        .marquee-content { display: flex; gap: 80px; white-space: nowrap; animation: scroll 25s linear infinite; }
+        .marquee-content i, .marquee-content h2 { font-size: 38px; color: #94a3b8; margin: 0 30px; transition: 0.3s; }
+        .marquee-content h2:hover { color: #0f172a; transform: scale(1.1); }
+        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        
+        /* الأقسام العامة */
+        .section-padding { padding: 100px 20px; position: relative; }
+        .section-title { font-size: 42px; font-weight: 800; text-align: center; margin-bottom: 70px; background: linear-gradient(135deg, #0f172a, #3b82f6); -webkit-background-clip: text; background-clip: text; color: transparent; position: relative; display: inline-block; width: auto; left: 50%; transform: translateX(-50%); letter-spacing: -1px; }
+        .section-title::after { content: ''; display: block; width: 100px; height: 6px; background: linear-gradient(90deg, #f1c40f, #e67e22); margin: 15px auto 0; border-radius: 10px; }
+        .container { max-width: 1350px; margin: 0 auto; display: flex; justify-content: center; gap: 35px; flex-wrap: wrap; }
+        
+        /* مميزات 3D */
+        .features-grid { display: flex; justify-content: center; gap: 35px; flex-wrap: wrap; }
+        .feature-box { background: white; padding: 40px 25px; width: 290px; border-radius: 30px; box-shadow: 0 15px 35px rgba(0,0,0,0.04); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); border-bottom: 5px solid #e2e8f0; text-align: center; position: relative; z-index: 1; overflow: hidden; }
+        .feature-box::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 0%; background: linear-gradient(135deg, rgba(59,130,246,0.05), rgba(45,212,191,0.05)); transition: 0.4s; z-index: -1; border-radius: 30px; }
+        .feature-box:hover::before { height: 100%; }
+        .feature-box:hover { transform: translateY(-15px); border-bottom-color: #3b82f6; box-shadow: 0 30px 50px rgba(59,130,246,0.15); }
+        .feature-box i { font-size: 55px; background: linear-gradient(135deg, #3b82f6, #2dd4bf); -webkit-background-clip: text; color: transparent; margin-bottom: 25px; transition: 0.4s; }
+        .feature-box:hover i { transform: scale(1.2) rotate(10deg); }
+        
+        /* كروت الخدمات (حفاظاً على الروابط الأصلية) */
+        .card { background: rgba(255,255,255,0.8); backdrop-filter: blur(12px); padding: 25px; width: 340px; border-radius: 35px; box-shadow: 0 20px 40px rgba(0,0,0,0.06); transition: 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); border: 1px solid rgba(255,255,255,0.8); text-align: center; position: relative; overflow: hidden;}
+        .card img { width: 100%; height: 220px; object-fit: cover; border-radius: 25px; margin-bottom: 20px; transition: 0.7s; }
+        .card h3 { font-size: 28px; font-weight: 800; margin-bottom: 15px; }
+        .card-print h3 { color: #3b82f6; } .card-bind h3 { color: #f97316; } .card-stat h3 { color: #10b981; }
+        .card:hover { transform: translateY(-15px); box-shadow: 0 35px 60px rgba(0,0,0,0.12); border-color: rgba(59,130,246,0.2); }
+        .card:hover img { transform: scale(1.1) rotate(2deg); }
+        
+        /* العروض والعد التنازلي النيون */
+        .offers { background: linear-gradient(135deg, #ffffff, #fef9e3); margin: 60px auto; padding: 55px 40px; border-radius: 40px; width: 90%; max-width: 1100px; box-shadow: 0 30px 60px rgba(0,0,0,0.08); border-right: 10px solid #f1c40f; text-align: center; position: relative; overflow: hidden; }
+        .offer-badge { background: linear-gradient(135deg, #ef4444, #b91c1c); color: white; display: inline-block; padding: 10px 30px; border-radius: 50px; font-weight: 900; margin-bottom: 25px; font-size: 20px; box-shadow: 0 10px 20px rgba(239,68,68,0.4); animation: pulseBadge 2s infinite; }
+        .offers h3 { font-size: 34px; color: #0f172a; margin-bottom: 15px; font-weight: 800; }
+        .offers p { font-size: 20px; color: #475569; }
+        .countdown-timer { background: #0f172a; color: #f1c40f; padding: 18px 35px; border-radius: 20px; display: inline-block; margin-top: 35px; font-weight: 900; font-size: 32px; font-family: monospace; letter-spacing: 4px; box-shadow: inset 0 0 20px rgba(0,0,0,0.6); }
+        
+        /* الإحصائيات (Parallax Effect) */
+        .stats-section { background: linear-gradient(rgba(15,23,42,0.92), rgba(15,23,42,0.92)), url('https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=1920&q=80') center/cover fixed; padding: 120px 20px; color: white; text-align: center; }
+        .stat-item { background: rgba(255,255,255,0.04); backdrop-filter: blur(15px); padding: 45px 30px; border-radius: 35px; border: 1px solid rgba(255,255,255,0.1); transition: 0.4s; min-width: 280px; }
+        .stat-item:hover { transform: translateY(-15px); background: rgba(255,255,255,0.08); border-color: rgba(241,196,15,0.5); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+        .stat-number { font-size: 70px; font-weight: 900; background: linear-gradient(135deg, #f1c40f, #fbbf24); -webkit-background-clip: text; color: transparent; line-height: 1; margin-bottom: 15px; }
+        .stat-label { font-size: 22px; color: #cbd5e1; font-weight: 700; }
+        
+        /* متجر المنتجات (Hover 3D Effect) */
+        .product-card { background: white; border-radius: 30px; width: 300px; padding: 25px; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 15px 35px rgba(0,0,0,0.05); border: 1px solid #f1f5f9; text-align: center; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
+        .product-card:hover { transform: translateY(-12px); box-shadow: 0 30px 50px rgba(59,130,246,0.15); border-color: #3b82f6; }
+        .product-img { width: 100%; height: 200px; object-fit: contain; border-radius: 20px; background: #f8fafc; padding: 15px; transition: 0.5s; }
+        .product-card:hover .product-img { transform: scale(1.08); }
+        .product-title { font-weight: 800; font-size: 20px; margin: 20px 0 10px; color: #1e293b; }
+        .product-price { font-size: 26px; font-weight: 900; color: #f97316; margin-bottom: 20px; }
+        .old-price { font-size: 16px; text-decoration: line-through; color: #94a3b8; margin-right: 10px; font-weight: 600; }
+        .product-actions { display: flex; gap: 10px; justify-content: center; }
+        .btn-cart, .btn-buy, .btn-wish { border: none; padding: 12px 15px; border-radius: 15px; font-weight: 800; transition: 0.3s; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; z-index: 2; position: relative; }
+        .btn-cart { background: #eff6ff; color: #3b82f6; flex: 1.5; }
+        .btn-cart:hover { background: #3b82f6; color: white; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(59,130,246,0.3); }
+        .btn-buy { background: #ecfdf5; color: #10b981; flex: 1.5; }
+        .btn-buy:hover { background: #10b981; color: white; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(16,185,129,0.3); }
+        .btn-wish { background: #fef2f2; color: #ef4444; width: 50px; flex: none; font-size: 18px; }
+        .btn-wish:hover { background: #ef4444; color: white; transform: scale(1.1) rotate(10deg); box-shadow: 0 10px 20px rgba(239,68,68,0.3); }
+        
+        /* المودالات الزجاجية */
+        .modal { display: none; position: fixed; z-index: 1300; left: 0; top: 0; width: 100%; height: 100%; background: rgba(15,23,42,0.85); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); }
+        .modal-content { background: white; margin: 5% auto; padding: 40px; border-radius: 35px; width: 90%; max-width: 750px; max-height: 85vh; overflow-y: auto; text-align: right; position: relative; box-shadow: 0 30px 60px rgba(0,0,0,0.5); animation: modalPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes modalPop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .close-btn { position: absolute; left: 25px; top: 25px; font-size: 32px; background: #f1f5f9; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: 0.3s; color: #64748b; }
+        .close-btn:hover { background: #ef4444; color: white; transform: rotate(90deg); }
+        .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; border-bottom: 1px solid #e2e8f0; font-size: 18px; }
+        .cart-total { font-size: 26px; font-weight: 900; margin-top: 30px; text-align: left; color: #0f172a; border-top: 3px dashed #e2e8f0; padding-top: 20px; }
+        .checkout-btn { background: linear-gradient(135deg, #25D366, #128C7E); color: white; border: none; width: 100%; padding: 18px; border-radius: 50px; font-weight: 900; font-size: 20px; margin-top: 25px; transition: 0.3s; box-shadow: 0 15px 30px rgba(37,211,102,0.3); }
+        .checkout-btn:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(37,211,102,0.4); }
+        
+        /* الخريطة المحمية */
+        .map-section iframe { border-radius: 35px; width: 90%; max-width: 1300px; height: 500px; box-shadow: 0 25px 50px rgba(0,0,0,0.15); border: 6px solid white; transition: 0.4s; }
+        .map-section iframe:hover { transform: scale(1.02); box-shadow: 0 30px 60px rgba(0,0,0,0.25); }
+        
+        /* فوتر فخم */
+        .footer { background: linear-gradient(to top, #020617, #0f172a); color: #cbd5e1; padding: 100px 20px 50px; text-align: center; position: relative; }
+        .footer::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: linear-gradient(to right, transparent, #3b82f6, transparent); }
+        .footer-buttons { display: flex; justify-content: center; gap: 25px; flex-wrap: wrap; margin: 40px 0; }
+        .whatsapp-btn, .email-btn { display: inline-flex; align-items: center; gap: 12px; padding: 18px 40px; border-radius: 60px; font-weight: 900; font-size: 18px; color: white; text-decoration: none; transition: 0.3s; box-shadow: 0 15px 30px rgba(0,0,0,0.2); }
+        .whatsapp-btn { background: linear-gradient(135deg, #25D366, #128C7E); } .whatsapp-btn:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(37,211,102,0.4); }
+        .email-btn { background: linear-gradient(135deg, #ef4444, #b91c1c); } .email-btn:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(239,68,68,0.4); }
+        
+        /* أزرار النيون العائمة */
+        .floating-icons { position: fixed; bottom: 30px; right: 30px; display: flex; flex-direction: column; gap: 18px; z-index: 1200; }
+        .float-btn { width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; transition: 0.3s; box-shadow: 0 10px 25px rgba(0,0,0,0.3); position: relative; }
+        .float-cart { background: #3b82f6; color: white; } .float-cart:hover { background: #2563eb; transform: scale(1.1); }
+        .float-wish { background: #ef4444; color: white; } .float-wish:hover { background: #dc2626; transform: scale(1.1); }
+        .float-wa { background: #25D366; color: white; animation: floatBounce 2s infinite ease-in-out; }
+        .float-wa:hover { background: #128C7E; animation: none; transform: scale(1.15) rotate(-10deg); }
+        @keyframes floatBounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); box-shadow: 0 20px 35px rgba(37,211,102,0.4); } }
+        .float-count { position: absolute; top: -5px; right: -5px; background: #f1c40f; color: #0f172a; font-size: 13px; font-weight: 900; padding: 3px 8px; border-radius: 30px; min-width: 24px; border: 2px solid white;}
+        
+        @media (max-width: 768px) { .hero h1 { font-size: 42px; } .section-title { font-size: 30px; } .navbar .links a { display: none; /* إخفاء الروابط في الموبايل لتبسيط الواجهة مؤقتاً */ } }
     </style>
 </head>
 <body>
 
-    <div class="navbar">
-        <div class="logo">زيروكس المساحة</div>
-        <nav>
-            <a href="#">الرئيسية</a>
-            <a href="#services">خدماتنا</a>
-            <a href="#prices">الأسعار</a>
-            <a href="#contact">اتصل بنا</a>
-        </nav>
+<div class="custom-cursor" id="customCursor"></div>
+
+<div id="progress-bar"></div>
+
+<div class="navbar">
+    <div class="logo">زيروكس المساحة</div>
+    <div class="links">
+        <a href="#" class="hover-target" onclick="smoothScroll('home')">الرئيسية</a>
+        <a href="#" class="hover-target" onclick="smoothScroll('services')">أقسامنا</a>
+        <a href="#" class="hover-target" onclick="smoothScroll('machines')">ماكينات</a>
+        <a href="#" class="hover-target" onclick="smoothScroll('stationery-store')">أدوات مكتبية</a>
+        <a href="#" class="hover-target" onclick="smoothScroll('contact')">اتصل بنا</a>
+    </div>
+    <div class="nav-icons">
+        <div class="nav-icon hover-target" id="wishlistIconBtn" onclick="openModal('wishlist-modal')"><i class="far fa-heart"></i><span class="wish-count" id="wishCountNav">0</span></div>
+        <div class="nav-icon hover-target" id="cartIconBtn" onclick="openModal('cart-modal')"><i class="fas fa-shopping-cart"></i><span class="cart-count" id="cartCountNav">0</span></div>
+    </div>
+</div>
+
+<div class="hero" id="home">
+    <div class="hero-particles">
+        <div class="particle" style="width: 50px; height: 50px; left: 10%; animation-duration: 15s;"></div>
+        <div class="particle" style="width: 30px; height: 30px; left: 40%; animation-duration: 18s; animation-delay: 2s;"></div>
+        <div class="particle" style="width: 70px; height: 70px; left: 80%; animation-duration: 12s; animation-delay: 5s;"></div>
+    </div>
+    <h1>مركز منصور المتكامل</h1>
+    
+    <div class="typewriter-container">
+        نحن خبراؤك في <span class="typewriter-text" id="typewriter"></span>
     </div>
 
-    <div class="hero">
-        <h1>مركز منصور المتكامل</h1>
-        <p>نحن فخورون بتقديم أفضل خدمات التصوير والطباعة والأدوات المكتبية في الجيزة بأعلى جودة وأفضل سعر.</p>
+    <p>أكبر مركز لخدمات الطباعة والتصوير، وتوريد الماكينات والأدوات المكتبية في الدقي والمساحة.</p>
+    <div class="online-indicator"><span class="online-dot"></span><span style="font-weight: 700; letter-spacing: 1px;">الدعم الفني متاح الآن للرد الفوري</span></div>
+</div>
+
+<div class="brands-marquee"><div class="marquee-content"><h2><i class="fab fa-hp"></i> HP</h2><h2>XEROX</h2><h2>RICOH</h2><h2><i class="fab fa-windows"></i> Microsoft</h2><h2>EPSON</h2><h2>CANON</h2><h2><i class="fab fa-hp"></i> HP</h2><h2>XEROX</h2><h2>RICOH</h2></div></div>
+
+<div class="section-padding" data-aos="fade-up">
+    <h2 class="section-title">لماذا مركز منصور؟</h2>
+    <div class="features-grid">
+        <div class="feature-box hover-target"><i class="fas fa-bolt"></i><h4>سرعة فائقة</h4><p>طاقم عمل محترف لإنهاء أضخم كميات الورق في وقت قياسي.</p></div>
+        <div class="feature-box hover-target"><i class="fas fa-microchip"></i><h4>جودة لا تقارن</h4><p>أحبار أصلية، ألوان زاهية، وصور 4×6 بخلفية نقية تماماً.</p></div>
+        <div class="feature-box hover-target"><i class="fas fa-truck-fast"></i><h4>خدمة أونلاين</h4><p>إرسال واستلام عبر الواتساب وتوصيل سريع للشركات والمنازل.</p></div>
     </div>
+</div>
 
-    <div class="container" id="services">
-        <h2 class="section-title">خدماتنا المتميزة</h2>
-        <div class="services-grid">
-            <div class="card">
-                <div class="card-content">
-                    <h2>طباعة وتصوير</h2>
-                    <p>أحدث ماكينات زيروكس للطباعة أبيض وأسود وألوان بجودة احترافية.</p>
-                    <a href="https://wa.me/201101339148" class="btn-whatsapp">اطلب الآن عبر واتساب</a>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-content">
-                    <h2>أدوات مكتبية</h2>
-                    <p>تشكيلة واسعة من الأقلام، الكشاكيل، وجميع مستلزمات المكاتب والشركات.</p>
-                    <a href="https://wa.me/201101339148" class="btn-whatsapp">استفسر عن المنتجات</a>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-content">
-                    <h2>سكانر وتغليف</h2>
-                    <p>خدمات المسح الضوئي (Scan) وتحويل الملفات لـ PDF وتغليف حراري للمستندات.</p>
-                    <a href="https://wa.me/201101339148" class="btn-whatsapp">احجز خدمتك</a>
-                </div>
-            </div>
-        </div>
+<div class="section-padding" id="services" style="background:#fff">
+    <h2 class="section-title">أقسام المركز الاحترافية</h2>
+    <div class="container">
+        <div class="card card-print hover-target" onclick="window.location.href='printing.html'"><img src="https://images.unsplash.com/photo-1562813733-b31f71025d54?auto=format&fit=crop&w=500&q=80" alt="طباعة"><h3>🖨️ طباعة وتصوير</h3><p>ليزر عالي الدقة، صور هوية، ومخططات الأوتوكاد.</p></div>
+        <div class="card card-bind hover-target" onclick="window.location.href='services.html'"><img src="https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?auto=format&fit=crop&w=500&q=80" alt="تغليف"><h3>📚 تغليف وتكعيب</h3><p>تغليف حراري متين، تكعيب سلك، وسحب ملفات PDF.</p></div>
+        <div class="card card-stat hover-target" onclick="window.location.href='stationery.html'"><img src="https://images.unsplash.com/photo-1586075010923-2dd4570fb338?auto=format&fit=crop&w=500&q=80" alt="أدوات"><h3>✂️ أدوات مكتبية</h3><p>كافة مستلزمات المدارس والمكاتب الإدارية والهندسية.</p></div>
     </div>
-
-    <div class="container" id="prices">
-        <h2 class="section-title">جدول الأسعار التقريبي</h2>
-        <table class="price-table">
-            <thead>
-                <tr>
-                    <th>الخدمة</th>
-                    <th>السعر يبدأ من</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>تصوير أبيض وأسود (ورقة واحدة)</td>
-                    <td>1.00 ج.م</td>
-                </tr>
-                <tr>
-                    <td>طباعة ألوان (A4)</td>
-                    <td>5.00 ج.م</td>
-                </tr>
-                <tr>
-                    <td>تغليف حراري</td>
-                    <td>10.00 ج.م</td>
-                </tr>
-                <tr>
-                    <td>سكانر (Scan)</td>
-                    <td>2.00 ج.م</td>
-                </tr>
-            </tbody>
-        </table>
+    <div style="display:flex; justify-content:center; gap:20px; flex-wrap:wrap; margin-top:50px">
+        <button onclick="openModal('modal-print')" class="btn-cart hover-target" style="background:#3b82f6; color:white; padding:15px 35px; font-size: 18px;">🗒️ أسعار الطباعة</button>
+        <button onclick="openModal('modal-bind')" class="btn-cart hover-target" style="background:#f97316; color:white; padding:15px 35px; font-size: 18px;">📃 أسعار التغليف</button>
+        <button onclick="openModal('modal-stationery')" class="btn-cart hover-target" style="background:#10b981; color:white; padding:15px 35px; font-size: 18px;">✏️ أسعار الأدوات</button>
     </div>
+</div>
 
-    <div class="container" id="contact">
-        <h2 class="section-title">موقعنا</h2>
-        <div class="map-container">
-            <iframe src="https://maps.google.com/maps?q=مكتبة%20وتصوير%20منصور,%20الجيزة&t=&z=15&ie=UTF8&iwloc=&output=embed" 
-                    width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
-        </div>
+<div class="offers hover-target" data-aos="zoom-in">
+    <span class="offer-badge">🚀 عرض الشركات والمكاتب 🚀</span>
+    <h3 style="font-size:32px; margin-bottom:15px;">وفر أكتر مع الكميات الكبيرة</h3>
+    <p>خصم <strong>20%</strong> على الطباعة والتصوير لأكثر من 100 ورقة، وتخفيض خاص جداً على التغليف الشامل للرسائل العلمية.</p>
+    <div class="countdown-timer"><i class="fas fa-clock" style="color:#ef4444; margin-left: 15px;"></i> ينتهي العرض خلال: <span id="mainTimer">00:00:00</span></div>
+</div>
+
+<div class="stats-section" id="stats">
+    <div class="container" style="gap:60px">
+        <div class="stat-item hover-target"><div class="stat-number" data-target="12500">0</div><div class="stat-label">عميل وشركة يثقون بنا</div></div>
+        <div class="stat-item hover-target"><div class="stat-number" data-target="18">0</div><div class="stat-label">سنة من الخبرة والتميز</div></div>
+        <div class="stat-item hover-target"><div class="stat-number" data-target="2350">0</div><div class="stat-label">ماكينة تم صيانتها وبيعها</div></div>
     </div>
+</div>
 
-    <footer class="footer">
-        <div class="footer-grid">
-            <div class="footer-item">
-                <h3>عن زيروكس المساحة</h3>
-                <p>نحن نعمل على توفير كافة احتياجات الطلاب والشركات من خدمات مكتبية وطباعة بأحدث التكنولوجيا العالمية في قلب الجيزة.</p>
-            </div>
-            <div class="footer-item">
-                <h3>تواصل مباشر</h3>
-                <p>📍 الجيزة - المساحة</p>
-                <p>📞 الهاتف: 01101339148</p>
-                <p>📧 الإيميل: xerox_elmesaha@yahoo.com</p>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>جميع الحقوق محفوظة &copy; 2026 - محمد منصور (زيروكس المساحة)</p>
-        </div>
-    </footer>
+<div class="section-padding" id="machines">
+    <h2 class="section-title">🖨️ أحدث ماكينات التصوير بضمان</h2>
+    <div class="container" id="machinesContainer"></div>
+</div>
 
+<div class="section-padding" style="background:#f1f5f9">
+    <h2 class="section-title">💨 أحبار أصلية وقطع غيار معتمدة</h2>
+    <div class="container" id="sparesContainer"></div>
+</div>
+
+<div class="section-padding" id="stationery-store">
+    <h2 class="section-title">✏️ متجر الأدوات المكتبية الشامل</h2>
+    <div class="container" id="stationeryContainer"></div>
+</div>
+
+<div class="map-section section-padding" data-aos="zoom-in">
+    <h2 class="section-title">📍 موقعنا في ميدان المساحة</h2>
+    <iframe src="https://maps.google.com/maps?q=30.037137,31.215194&hl=ar&z=17&output=embed" allowfullscreen="" loading="lazy"></iframe>
+    <p style="margin-top: 25px; color:#475569; font-size: 18px; font-weight: 600;">أمام محطة مترو الدقي، بجوار سوبر ماركت مترو – يمين شارع المساحة</p>
+</div>
+
+<footer class="footer" id="contact">
+    <h2 style="font-size:42px; margin-bottom:25px; color:white; font-weight: 900;">تواصل معنا الآن</h2>
+    <p style="font-size: 20px; margin-bottom: 10px;">📍 الجيزة - ميدان المساحة (الدقي)</p>
+    <p style="font-size: 20px;">📞 01101339148  |  📧 xerox_elmesaha@yahoo.com</p>
+    <div class="footer-buttons">
+        <a href="https://wa.me/201101339148" class="whatsapp-btn hover-target" target="_blank"><i class="fab fa-whatsapp" style="font-size: 26px;"></i> خدمة فورية عبر الواتساب</a>
+        <a href="mailto:xerox_elmesaha@yahoo.com" class="email-btn hover-target"><i class="far fa-envelope" style="font-size: 26px;"></i> راسلنا عبر الإيميل</a>
+    </div>
+    <p style="margin-top:50px; font-size:16px; opacity: 0.5;">© 2026 مركز منصور المتكامل – جميع الحقوق محفوظة.</p>
+</footer>
+
+<div class="floating-icons">
+    <div class="float-btn float-cart hover-target" id="floatCartBtn" onclick="openModal('cart-modal')"><i class="fas fa-shopping-cart"></i><span class="float-count" id="floatCartCount">0</span></div>
+    <div class="float-btn float-wish hover-target" id="floatWishBtn" onclick="openModal('wishlist-modal')"><i class="far fa-heart"></i><span class="float-count" id="floatWishCount">0</span></div>
+    <a href="https://wa.me/201101339148" class="float-btn float-wa hover-target" target="_blank"><i class="fab fa-whatsapp"></i></a>
+</div>
+
+<div id="modal-print" class="modal"><div class="modal-content"><span class="close-btn hover-target" onclick="closeModal('modal-print')">×</span><h3 style="font-size: 28px; margin-bottom: 20px;">🖨️ أسعار الطباعة والتصوير</h3><table class="product-table"><tr><th>الخدمة</th><th>السعر</th></tr><tr><td>تصوير A4 أبيض وأسود</td><td style="color:#f97316; font-weight:800;">2 ج.م</td></tr><tr><td>طباعة ألوان ليزر</td><td style="color:#f97316; font-weight:800;">5 ج.م</td></tr><tr><td>تصوير بطاقة (وش وظهر)</td><td style="color:#f97316; font-weight:800;">3 ج.م</td></tr><tr><td>ضبط مقاس وإضاءة لصور المؤسسات 4×6 خلفية بيضاء</td><td style="color:#f97316; font-weight:800;">7 ج.م</td></tr></table><a href="https://wa.me/201101339148" class="whatsapp-order hover-target"><i class="fab fa-whatsapp"></i> طلب عبر واتساب</a></div></div>
+<div id="modal-bind" class="modal"><div class="modal-content"><span class="close-btn hover-target" onclick="closeModal('modal-bind')">×</span><h3 style="font-size: 28px; margin-bottom: 20px;">📚 أسعار التغليف</h3><table class="product-table"><tr><th>الخدمة</th><th>السعر</th></tr><tr><td>تغليف حراري A4</td><td style="color:#f97316; font-weight:800;">10 ج.م</td></tr><tr><td>تكعيب سلك حلزوني</td><td style="color:#f97316; font-weight:800;">25 ج.م</td></tr></table><a href="https://wa.me/201101339148" class="whatsapp-order hover-target"><i class="fab fa-whatsapp"></i> طلب عبر واتساب</a></div></div>
+<div id="modal-stationery" class="modal"><div class="modal-content"><span class="close-btn hover-target" onclick="closeModal('modal-stationery')">×</span><h3 style="font-size: 28px; margin-bottom: 20px;">✏️ أسعار الأدوات</h3><table class="product-table"><tr><th>المنتج</th><th>السعر</th></tr><tr><td>أقلام جيل (12 قطعة)</td><td style="color:#f97316; font-weight:800;">45 ج.م</td></tr><tr><td>دفتر 100 ورقة</td><td style="color:#f97316; font-weight:800;">22 ج.م</td></tr></table><a href="https://wa.me/201101339148" class="whatsapp-order hover-target"><i class="fab fa-whatsapp"></i> طلب عبر واتساب</a></div></div>
+
+<div id="cart-modal" class="modal"><div class="modal-content"><span class="close-btn hover-target" onclick="closeModal('cart-modal')">×</span><h3 style="font-size: 28px; margin-bottom: 20px;">🛒 سلة المشتريات</h3><div id="cartItemsList"></div><div id="cartTotal" class="cart-total"></div><button class="checkout-btn hover-target" onclick="checkoutCart()">📦 إنهاء الطلب عبر واتساب</button></div></div>
+<div id="wishlist-modal" class="modal"><div class="modal-content"><span class="close-btn hover-target" onclick="closeModal('wishlist-modal')">×</span><h3 style="font-size: 28px; margin-bottom: 20px;">❤️ المفضلة</h3><div id="wishlistItemsList"></div><button class="checkout-btn hover-target" style="background:#3b82f6;" onclick="moveAllWishToCart()">➕ نقل الكل إلى السلة</button></div></div>
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    AOS.init({ duration: 800, once: true, offset: 100 });
+
+    /* برمجة مؤشر الماوس */
+    const cursor = document.getElementById('customCursor');
+    const hoverTargets = document.querySelectorAll('.hover-target, button, a, .product-card, .card, .feature-box');
+    
+    document.addEventListener('mousemove', e => {
+        cursor.style.left = e.clientX + 'px';
+        cursor.style.top = e.clientY + 'px';
+    });
+    
+    hoverTargets.forEach(target => {
+        target.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
+        target.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
+    });
+
+    /* برمجة الكتابة الآلية */
+    const typeWriterText = document.getElementById('typewriter');
+    const words = ["الطباعة الرقمية.", "مخططات الأوتوكاد.", "صيانة ماكينات التصوير.", "تجهيز الأدوات المكتبية."];
+    let wordIndex = 0; let charIndex = 0; let isDeleting = false;
+    
+    function type() {
+        const currentWord = words[wordIndex];
+        if (isDeleting) { typeWriterText.textContent = currentWord.substring(0, charIndex - 1); charIndex--; } 
+        else { typeWriterText.textContent = currentWord.substring(0, charIndex + 1); charIndex++; }
+        
+        let typeSpeed = isDeleting ? 50 : 100;
+        if (!isDeleting && charIndex === currentWord.length) { typeSpeed = 2000; isDeleting = true; } 
+        else if (isDeleting && charIndex === 0) { isDeleting = false; wordIndex = (wordIndex + 1) % words.length; typeSpeed = 500; }
+        setTimeout(type, typeSpeed);
+    }
+    setTimeout(type, 1000);
+
+    /* شريط التقدم */
+    window.onscroll = function() {
+        let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        document.getElementById("progress-bar").style.width = (winScroll / height) * 100 + "%";
+    };
+
+    /* قاعدة البيانات كما هي تماماً */
+    const productsDatabase = [
+        { id: 1, name: "ماكينة زيروكس 7855 (أبيض وأسود)", price: 24500, oldPrice: 29000, img: "https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?auto=format&fit=crop&w=300&q=80", category: "machine" },
+        { id: 2, name: "ماكينة ريكو MP 5055 (ألوان)", price: 22500, oldPrice: 26000, img: "https://images.unsplash.com/photo-1590493060596-f09c25e83ec6?auto=format&fit=crop&w=300&q=80", category: "machine" },
+        { id: 3, name: "HP PageWide 500 – طباعة ألوان", price: 28000, oldPrice: 32000, img: "https://images.unsplash.com/photo-1562813733-b31f71025d54?auto=format&fit=crop&w=300&q=80", category: "machine" },
+        { id: 4, name: "زيروكس 5855 – سرعة 55 ورقة", price: 21000, oldPrice: 24500, img: "https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?auto=format&fit=crop&w=300&q=80", category: "machine" },
+        { id: 5, name: "طابعة ابسون L1800 (صور فوتو)", price: 15000, oldPrice: 16500, img: "https://images.unsplash.com/photo-1562813733-b31f71025d54?auto=format&fit=crop&w=300&q=80", category: "machine" },
+        { id: 6, name: "ريكو SP 5300 – ليزر عالي التحمل", price: 19500, oldPrice: 23000, img: "https://images.unsplash.com/photo-1590493060596-f09c25e83ec6?auto=format&fit=crop&w=300&q=80", category: "machine" },
+        { id: 8, name: "خرطوش حبر زيروكس 7855 أصلي", price: 450, oldPrice: 550, img: "https://images.unsplash.com/photo-1588681664899-f142ff2dc9b1?auto=format&fit=crop&w=300&q=80", category: "spare" },
+        { id: 9, name: "حبر ريكو SP 5300 (أسود)", price: 380, oldPrice: 470, img: "https://images.unsplash.com/photo-1588681664899-f142ff2dc9b1?auto=format&fit=crop&w=300&q=80", category: "spare" },
+        { id: 10, name: "درام لريكو 5055 أصلي", price: 850, oldPrice: 1050, img: "https://images.unsplash.com/photo-1588681664899-f142ff2dc9b1?auto=format&fit=crop&w=300&q=80", category: "spare" },
+        { id: 11, name: "حبر HP PageWide (أسود)", price: 500, oldPrice: 620, img: "https://images.unsplash.com/photo-1588681664899-f142ff2dc9b1?auto=format&fit=crop&w=300&q=80", category: "spare" },
+        { id: 16, name: "رزمة ورق A4 Double A", price: 280, oldPrice: 320, img: "https://images.unsplash.com/photo-1586075010923-2dd4570fb338?auto=format&fit=crop&w=300&q=80", category: "stationery" },
+        { id: 18, name: "دباسة مكتب ثقيلة (روكو)", price: 125, oldPrice: 160, img: "https://images.unsplash.com/photo-1586075010923-2dd4570fb338?auto=format&fit=crop&w=300&q=80", category: "stationery" },
+        { id: 21, name: "آلة حاسبة علمية كاسيو", price: 450, oldPrice: 520, img: "https://images.unsplash.com/photo-1586075010923-2dd4570fb338?auto=format&fit=crop&w=300&q=80", category: "stationery" }
+    ];
+
+    let cart = JSON.parse(localStorage.getItem('advancedCart')) || [];
+    let wishlist = JSON.parse(localStorage.getItem('advancedWishlist')) || [];
+
+    function saveAll() { localStorage.setItem('advancedCart', JSON.stringify(cart)); localStorage.setItem('advancedWishlist', JSON.stringify(wishlist)); updateAllCounters(); renderCartModal(); renderWishlistModal(); }
+    
+    function updateAllCounters() {
+        let cartQty = cart.reduce((sum, i) => sum + i.quantity, 0); let wishCount = wishlist.length;
+        document.getElementById('cartCountNav').innerText = cartQty; document.getElementById('wishCountNav').innerText = wishCount;
+        document.getElementById('floatCartCount').innerText = cartQty; document.getElementById('floatWishCount').innerText = wishCount;
+    }
+    
+    function addToCart(productId) { let product = productsDatabase.find(p => p.id == productId); let existing = cart.find(i => i.id == productId); if (existing) existing.quantity++; else cart.push({ ...product, quantity: 1 }); saveAll(); }
+    function removeFromCart(productId) { cart = cart.filter(i => i.id != productId); saveAll(); }
+    function updateQty(id, delta) { let item = cart.find(i => i.id == id); if (item) { item.quantity += delta; if (item.quantity <= 0) removeFromCart(id); else saveAll(); } }
+    function toggleWishlist(productId) { let product = productsDatabase.find(p => p.id == productId); let index = wishlist.findIndex(w => w.id == productId); if (index === -1) wishlist.push(product); else wishlist.splice(index, 1); saveAll(); renderAllProductSections(); }
+    function moveAllWishToCart() { wishlist.forEach(prod => { let ex = cart.find(i => i.id == prod.id); if (ex) ex.quantity++; else cart.push({ ...prod, quantity: 1 }); }); wishlist = []; saveAll(); }
+    
+    function renderCartModal() {
+        let div = document.getElementById('cartItemsList'); if (!div) return;
+        if (cart.length === 0) { div.innerHTML = '<p style="font-size:20px; text-align:center; padding: 20px;">السلة فارغة حالياً ☹️</p>'; document.getElementById('cartTotal').innerHTML = ''; return; }
+        let html = '', total = 0;
+        cart.forEach(item => { let itemTotal = item.price * item.quantity; total += itemTotal; html += `<div class="cart-item"><div><strong>${item.name}</strong><br>${item.price} ج.م × ${item.quantity} = <span style="color:#f97316; font-weight:900">${itemTotal} ج.م</span></div><div><button class="btn-cart hover-target" style="padding:8px 12px; margin-left:5px" onclick="updateQty(${item.id},1)">+</button><button class="btn-cart hover-target" style="padding:8px 12px; margin-left:5px" onclick="updateQty(${item.id},-1)">-</button><button class="btn-wish hover-target" style="padding:8px 12px" onclick="removeFromCart(${item.id})"><i class="fas fa-trash-alt"></i></button></div></div>`; });
+        div.innerHTML = html; document.getElementById('cartTotal').innerHTML = `<strong>الإجمالي النهائي:</strong> ${total} ج.م`;
+    }
+    function renderWishlistModal() {
+        let div = document.getElementById('wishlistItemsList'); if (!div) return;
+        if (wishlist.length === 0) { div.innerHTML = '<p style="text-align:center;">لا توجد منتجات في المفضلة 💔</p>'; return; }
+        let html = '';
+        wishlist.forEach(item => { html += `<div class="cart-item"><div><strong>${item.name}</strong><br>${item.price} ج.م</div><div><button class="btn-cart hover-target" style="margin-left:10px" onclick="addToCart(${item.id})">➕ للسلة</button><button class="btn-wish hover-target" onclick="toggleWishlist(${item.id})"><i class="fas fa-trash-alt"></i> إزالة</button></div></div>`; });
+        div.innerHTML = html;
+    }
+    function checkoutCart() { if (cart.length === 0) return; let msg = "أريد شراء المنتجات التالية:\n"; cart.forEach(i => msg += `- ${i.name} (${i.quantity} × ${i.price} = ${i.price * i.quantity} ج.م)\n`); msg += `الإجمالي: ${cart.reduce((a,b)=>a+(b.price*b.quantity),0)} ج.م`; window.open(`https://wa.me/201101339148?text=${encodeURIComponent(msg)}`, '_blank'); }
+    
+    function renderProductList(containerId, categoryFilter) {
+        let container = document.getElementById(containerId); if (!container) return;
+        let filtered = productsDatabase.filter(p => p.category === categoryFilter); container.innerHTML = '';
+        filtered.forEach(p => { let inWish = wishlist.some(w => w.id == p.id); let discountHtml = p.oldPrice ? `<span class="old-price">${p.oldPrice} ج.م</span>` : '';
+            container.innerHTML += `<div class="product-card hover-target" data-aos="fade-up"><img src="${p.img}" class="product-img" alt="${p.name}"><div class="product-title">${p.name}</div><div class="product-price">${discountHtml} ${p.price} ج.م</div><div class="product-actions"><button class="btn-cart hover-target" onclick="addToCart(${p.id})"><i class="fas fa-cart-plus"></i></button><button class="btn-buy hover-target" onclick="addToCart(${p.id});checkoutCart()"><i class="fas fa-bolt"></i> شراء</button><button class="btn-wish hover-target" style="color:${inWish ? '#ef4444' : '#94a3b8'}" onclick="toggleWishlist(${p.id})"><i class="fas fa-heart"></i></button></div></div>`;
+        });
+    }
+    function renderAllProductSections() { renderProductList('machinesContainer', 'machine'); renderProductList('sparesContainer', 'spare'); renderProductList('stationeryContainer', 'stationery'); renderWishlistModal(); renderCartModal(); }
+    
+    // العداد التنازلي
+    let offerSeconds = 48 * 3600;
+    setInterval(() => { if (offerSeconds > 0) offerSeconds--; let h = Math.floor(offerSeconds / 3600), m = Math.floor((offerSeconds % 3600) / 60), s = offerSeconds % 60; document.getElementById('mainTimer').innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`; }, 1000);
+    
+    // الإحصائيات
+    const counters = document.querySelectorAll('.stat-number'); let counted = false;
+    window.addEventListener('scroll', function() { if (!counted) { let statsDiv = document.getElementById('stats'); if (statsDiv && statsDiv.getBoundingClientRect().top < window.innerHeight - 100) { counters.forEach(counter => { let target = parseInt(counter.getAttribute('data-target')); let count = 0; let step = target / 55; let upd = setInterval(() => { count += step; if (count >= target) { counter.innerText = target + '+'; clearInterval(upd); } else counter.innerText = Math.floor(count); }, 30); }); counted = true; } } });
+    
+    function openModal(id) { document.getElementById(id).style.display = 'block'; renderCartModal(); renderWishlistModal(); }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    window.onclick = function(e) { if (e.target.classList && e.target.classList.contains('modal')) e.target.style.display = 'none'; }
+    function smoothScroll(id) { document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }); }
+    
+    renderAllProductSections(); updateAllCounters();
+</script>
 </body>
 </html>
