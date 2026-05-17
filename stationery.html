@@ -10,323 +10,559 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     <style>
-        /* ===== إعدادات متقدمة (مؤشر ماوس، شريط تقدم) ===== */
-        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; cursor: none; }
-        ::-webkit-scrollbar { width: 10px; }
-        ::-webkit-scrollbar-track { background: #0f172a; }
-        ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #3b82f6, #2dd4bf); border-radius: 10px; }
-        body { font-family: 'Cairo', sans-serif; background: #f8fafc; color: #0f172a; overflow-x: hidden; line-height: 1.6; }
-        
-        .custom-cursor { position: fixed; top: 0; left: 0; width: 25px; height: 25px; border: 2px solid #3b82f6; border-radius: 50%; pointer-events: none; z-index: 99999; transform: translate(-50%, -50%); transition: width 0.3s, height 0.3s, background-color 0.3s; mix-blend-mode: difference; }
-        .custom-cursor.hovered { width: 60px; height: 60px; background-color: rgba(59, 130, 246, 0.8); border-color: transparent; }
-        #progress-bar { position: fixed; top: 0; left: 0; height: 5px; background: linear-gradient(90deg, #3b82f6, #2dd4bf); width: 0%; z-index: 9999; transition: width 0.1s linear; box-shadow: 0 0 15px #3b82f6; }
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+        body { font-family: 'Cairo', 'Segoe UI', sans-serif; background: #f8fafc; color: #0f172a; overflow-x: hidden; line-height: 1.6; }
 
-        /* شريط التنقل الزجاجي */
-        .navbar { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(20px); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; position: sticky; top: 0; z-index: 1100; box-shadow: 0 10px 40px rgba(0,0,0,0.2); border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .navbar .logo { font-size: 30px; font-weight: 900; background: linear-gradient(135deg, #3b82f6, #2dd4bf, #3b82f6); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; color: transparent; animation: shine 3s linear infinite; }
-        @keyframes shine { to { background-position: 200% center; } }
-        .navbar .links a { color: #e2e8f0; text-decoration: none; margin-right: 25px; font-weight: 700; transition: 0.3s; font-size: 17px; position: relative; padding: 5px 0; }
-        .navbar .links a:hover { color: #3b82f6; text-shadow: 0 0 12px rgba(59,130,246,0.8); }
-        .navbar .links a::after { content: ''; position: absolute; bottom: -2px; right: 0; width: 0; height: 3px; background: #3b82f6; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); border-radius: 5px; }
+        #progress-bar { position: fixed; top: 0; left: 0; height: 4px; background: linear-gradient(90deg, #f1c40f, #e67e22); width: 0%; z-index: 9999; transition: width 0.08s linear; }
+
+        .navbar {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(16px);
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            position: sticky;
+            top: 0;
+            z-index: 1100;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .navbar .logo {
+            font-size: clamp(20px, 5vw, 28px);
+            font-weight: 800;
+            background: linear-gradient(135deg, #f1c40f, #e67e22);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .nav-links { display: flex; gap: 20px; flex-wrap: wrap; }
+        .navbar .links a {
+            color: #e2e8f0;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
+            font-size: 16px;
+            position: relative;
+            padding: 5px 0;
+        }
+        .navbar .links a:hover { color: #f1c40f; }
+        .navbar .links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 0;
+            height: 2px;
+            background: #f1c40f;
+            transition: 0.3s;
+        }
         .navbar .links a:hover::after { width: 100%; }
+        .nav-icons { display: flex; gap: 15px; align-items: center; }
+        .nav-icon { position: relative; color: white; font-size: 22px; transition: 0.3s; cursor: pointer; }
+        .nav-icon:hover { color: #f1c40f; transform: scale(1.05); }
+        .cart-count, .wish-count {
+            position: absolute;
+            top: -10px;
+            right: -12px;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 30px;
+            min-width: 18px;
+            text-align: center;
+        }
+        .menu-toggle { display: none; background: none; border: none; color: white; font-size: 28px; cursor: pointer; }
+        @media (max-width: 768px) {
+            .menu-toggle { display: block; }
+            .nav-links { display: none; width: 100%; flex-direction: column; align-items: center; padding-top: 15px; }
+            .nav-links.show { display: flex; }
+            .navbar .links { display: flex; flex-direction: column; align-items: center; gap: 10px; width: 100%; }
+        }
 
-        /* واجهة القسم (هيرو) */
-        .stationery-hero { position: relative; background: linear-gradient(115deg, rgba(15,23,42,0.92) 0%, rgba(30,41,59,0.88) 100%), url('https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1920&q=80') center/cover fixed; color: white; padding: 160px 20px; text-align: center; overflow: hidden; }
-        .hero-particles .particle { position: absolute; background: rgba(59,130,246,0.15); border-radius: 50%; animation: floatParticle 12s infinite linear; pointer-events: none; }
-        @keyframes floatParticle { 0% { transform: translateY(100vh) scale(0) rotate(0deg); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateY(-200px) scale(2) rotate(180deg); opacity: 0; } }
-        .hero-content { position: relative; z-index: 2; }
-        .stationery-hero h1 { font-size: 60px; font-weight: 900; margin-bottom: 20px; text-shadow: 0 15px 40px rgba(0,0,0,0.8); letter-spacing: -2px; }
-        .stationery-hero p { font-size: 22px; opacity: 0.9; max-width: 800px; margin: 0 auto; line-height: 1.8; }
-        .back-home-btn { display: inline-flex; align-items: center; gap: 10px; margin-top: 35px; padding: 15px 35px; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); color: white; text-decoration: none; border-radius: 50px; font-weight: 800; font-size: 18px; transition: 0.4s; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-        .back-home-btn:hover { background: #3b82f6; border-color: #3b82f6; transform: translateY(-5px); box-shadow: 0 15px 35px rgba(59,130,246,0.4); }
+        .stationery-hero {
+            position: relative;
+            background: linear-gradient(115deg, rgba(15,23,42,0.92), rgba(30,41,59,0.88)), url('https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1920&q=80') center/cover;
+            color: white;
+            padding: 100px 5%;
+            text-align: center;
+        }
+        .stationery-hero h1 { font-size: clamp(28px, 8vw, 60px); font-weight: 900; margin-bottom: 15px; }
+        .stationery-hero p { font-size: clamp(16px, 4vw, 22px); max-width: 800px; margin: 0 auto; opacity: 0.9; }
+        .back-home-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 35px;
+            padding: 12px 30px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 800;
+            font-size: 16px;
+            transition: 0.4s;
+        }
+        .back-home-btn:hover { background: #f1c40f; color: #1a252f; transform: translateY(-3px); }
 
-        /* شريط العروض المتحرك */
-        .offers-ticker { background-color: #f1c40f; color: #1a252f; padding: 12px; font-weight: bold; font-size: 16px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); overflow: hidden; white-space: nowrap; }
-        .offers-ticker marquee { display: inline-block; width: 100%; }
+        .filter-container {
+            margin: 40px 5% 20px;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            background: white;
+            color: #2c3e50;
+            border: 2px solid #2c3e50;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            font-family: inherit;
+            font-size: 14px;
+        }
+        .filter-btn.active, .filter-btn:hover {
+            background: #f1c40f;
+            color: #1a252f;
+            border-color: #f1c40f;
+        }
 
-        /* أزرار الفلترة */
-        .filter-container { margin: 40px 0 20px; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
-        .filter-btn { background: white; color: #2c3e50; border: 2px solid #2c3e50; padding: 10px 25px; border-radius: 30px; font-weight: bold; cursor: pointer; transition: 0.3s; font-family: inherit; font-size: 16px; }
-        .filter-btn.active, .filter-btn:hover { background: #11998e; color: white; border-color: #11998e; box-shadow: 0 4px 10px rgba(17, 153, 142, 0.3); }
+        .section-padding { padding: 40px 5%; }
+        .section-title {
+            font-size: clamp(22px, 6vw, 36px);
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 40px;
+            background: linear-gradient(135deg, #0f172a, #3b82f6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, #f1c40f, #e67e22);
+            margin: 15px auto 0;
+            border-radius: 10px;
+        }
+        .products-container {
+            max-width: 1350px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
 
-        /* كروت المنتجات المطورة (دمج التصميمين) */
-        .section-padding { padding: 60px 20px; }
-        .container { max-width: 1350px; margin: 0 auto; display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; }
-        
-        .item-card { background: rgba(255,255,255,0.95); backdrop-filter: blur(5px); width: 310px; border-radius: 25px; padding: 30px 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.04); transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); text-align: right; border-bottom: 5px solid #11998e; position: relative; overflow: hidden; display: flex; flex-direction: column; }
-        .item-card::before { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(to right, transparent, rgba(17,153,142,0.1), transparent); transform: skewX(-25deg); transition: 0.7s; }
-        .item-card:hover::before { left: 200%; }
-        .item-card:hover { transform: translateY(-12px); box-shadow: 0 30px 60px rgba(17,153,142,0.15); border-bottom-color: #f1c40f; }
-        
-        .item-icon { width: 70px; height: 70px; background: #f8fafc; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; color: #11998e; font-size: 32px; transition: 0.4s; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
-        .item-card:hover .item-icon { background: linear-gradient(135deg, #11998e, #38ef7d); color: white; transform: rotateY(180deg); }
-        
-        .item-card h3 { color: #1e293b; font-size: 22px; font-weight: 900; margin-bottom: 10px; }
-        .item-card p { color: #64748b; margin-bottom: 15px; font-size: 14px; line-height: 1.5; }
-        .price { font-size: 24px; font-weight: 900; color: #f97316; margin: 10px 0; background: #fff7ed; padding: 5px 15px; border-radius: 12px; display: inline-block; align-self: flex-start; }
-        
-        .badge { position: absolute; top: 15px; left: -30px; background: #e74c3c; color: white; padding: 5px 30px; font-size: 11px; font-weight: bold; transform: rotate(-45deg); box-shadow: 0 2px 4px rgba(0,0,0,0.2); z-index: 1; width: 120px; text-align: center; }
-        .badge-new { background: #3498db; }
-        
-        .order-btn { display: flex; justify-content: center; align-items: center; gap: 10px; background: #25D366; color: white; text-decoration: none; padding: 14px; border-radius: 12px; font-weight: 800; font-size: 15px; transition: 0.3s; margin-top: 15px; box-shadow: 0 10px 20px rgba(37,211,102,0.2); }
-        .order-btn:hover { background: #128C7E; transform: translateY(-3px); box-shadow: 0 15px 25px rgba(37,211,102,0.4); }
+        .product-card {
+            background: white;
+            border-radius: 20px;
+            flex: 1 1 280px;
+            max-width: 320px;
+            padding: 25px 20px;
+            transition: 0.3s;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        }
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 35px rgba(0,0,0,0.1);
+        }
+        .product-icon { font-size: 48px; margin-bottom: 15px; color: #f1c40f; }
+        .product-card h3 { font-size: 18px; font-weight: 800; margin-bottom: 10px; color: #1e293b; }
+        .product-price { font-size: 22px; font-weight: 900; color: #f97316; margin: 15px 0; }
+        .order-wa-btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            background: #25D366;
+            color: white;
+            text-decoration: none;
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 14px;
+            transition: 0.3s;
+            margin-top: auto;
+        }
+        .order-wa-btn:hover { background: #128C7E; transform: translateY(-3px); }
 
-        /* صندوق اللستة المخصصة */
-        .custom-list-section { background: linear-gradient(135deg, #1a252f, #2c3e50); color: white; padding: 45px 35px; border-radius: 25px; width: 90%; max-width: 900px; margin: 60px auto; box-shadow: 0 20px 40px rgba(0,0,0,0.2); text-align: right; }
-        .custom-list-section h3 { color: #f1c40f; font-size: 26px; margin-bottom: 15px; }
-        .custom-list-section p { font-size: 16px; margin-bottom: 20px; opacity: 0.9; }
-        .custom-textarea { width: 100%; height: 120px; border-radius: 15px; border: none; padding: 15px; font-size: 16px; font-family: inherit; resize: vertical; outline: none; margin-bottom: 15px; color: #2c3e50; background: #fff; }
-        .send-list-btn { display: inline-flex; align-items: center; gap: 10px; background-color: #f1c40f; color: #1a252f; text-decoration: none; padding: 12px 30px; border-radius: 40px; font-weight: bold; font-size: 16px; transition: 0.3s; cursor: pointer; border: none; }
-        .send-list-btn:hover { background-color: #f39c12; transform: translateY(-3px); }
+        .promo-banner {
+            background: linear-gradient(135deg, #f1c40f, #e67e22);
+            color: white;
+            padding: 30px 5%;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 1000px;
+            margin: 40px auto;
+            text-align: center;
+        }
+        .promo-banner i { font-size: 48px; margin-bottom: 15px; display: block; }
+        .promo-banner h4 { font-size: 24px; margin-bottom: 10px; font-weight: 900; }
 
-        /* الفوتر */
-        .footer { background: linear-gradient(to top, #020617, #0f172a); color: #cbd5e1; padding: 60px 20px 30px; text-align: center; margin-top: 40px; }
+        .footer {
+            background: linear-gradient(to top, #020617, #0f172a);
+            color: #cbd5e1;
+            padding: 50px 5%;
+            text-align: center;
+            margin-top: 40px;
+        }
         .footer p { margin-bottom: 10px; font-size: 16px; }
 
-        /* زر واتساب عائم */
-        .floating-wa { position: fixed; bottom: 30px; right: 30px; background-color: #25D366; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 9999; animation: floatBounce 2s infinite ease-in-out; text-decoration: none; transition: 0.3s; }
-        .floating-wa:hover { transform: scale(1.1); background-color: #128C7E; }
-        @keyframes floatBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-
-        /* استجابة للشاشات الصغيرة */
-        @media (max-width: 768px) {
-            .stationery-hero h1 { font-size: 36px; }
-            .stationery-hero p { font-size: 18px; }
-            .navbar { flex-direction: column; text-align: center; }
-            .navbar .links a { margin: 0 12px; }
-            .filter-container { gap: 10px; }
-            .filter-btn { padding: 6px 15px; font-size: 13px; }
-            .item-card { width: 100%; max-width: 320px; }
-            .custom-list-section { padding: 30px 20px; }
-            .custom-list-section h3 { font-size: 20px; }
+        .floating-wa {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #25D366;
+            color: white;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 999;
+            animation: bounce 2s infinite;
+            text-decoration: none;
+            transition: 0.3s;
         }
-        
-        @media (max-width: 480px) {
-            .stationery-hero { padding: 100px 15px; }
-            .back-home-btn { padding: 10px 20px; font-size: 14px; }
+        .floating-wa:hover { transform: scale(1.1); background: #128C7E; animation: none; }
+        @keyframes bounce { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-8px);} }
+
+        @media (max-width: 600px) {
+            .filter-container { gap: 8px; }
+            .filter-btn { padding: 6px 15px; font-size: 12px; }
+            .product-card { max-width: 100%; }
         }
     </style>
 </head>
 <body>
 
-<div class="custom-cursor" id="customCursor"></div>
 <div id="progress-bar"></div>
 
-<div class="navbar" data-aos="fade-down">
+<div class="navbar">
     <div class="logo">زيروكس المساحة</div>
-    <div class="links">
-        <a href="index.html" class="hover-target">الرئيسية</a>
-        <a href="printing.html" class="hover-target">الطباعة والتصوير</a>
-        <a href="services.html" class="hover-target">خدمات إلكترونية</a>
-        <a href="stationery.html" class="hover-target" style="color: #3b82f6;">الأدوات المكتبية</a>
+    <button class="menu-toggle" onclick="document.querySelector('.nav-links').classList.toggle('show')"><i class="fas fa-bars"></i></button>
+    <div class="nav-links">
+        <div class="links">
+            <a href="index.html">الرئيسية</a>
+            <a href="printing.html">الطباعة والتصوير</a>
+            <a href="stationery.html" style="color:#f1c40f;">الأدوات المكتبية</a>
+        </div>
+    </div>
+    <div class="nav-icons">
+        <div class="nav-icon" onclick="openModal('wishlist-modal')"><i class="far fa-heart"></i><span class="wish-count" id="wishCountNav">0</span></div>
+        <div class="nav-icon" onclick="openModal('cart-modal')"><i class="fas fa-shopping-cart"></i><span class="cart-count" id="cartCountNav">0</span></div>
     </div>
 </div>
 
 <div class="stationery-hero">
-    <div class="hero-particles">
-        <div class="particle" style="width: 50px; height: 50px; left: 15%; animation-duration: 12s;"></div>
-        <div class="particle" style="width: 30px; height: 30px; left: 60%; animation-duration: 16s; animation-delay: 2s;"></div>
-        <div class="particle" style="width: 80px; height: 80px; left: 85%; animation-duration: 14s; animation-delay: 4s;"></div>
-    </div>
-    <div class="hero-content">
-        <h1 data-aos="fade-down">قسم الأدوات المكتبية</h1>
-        <p data-aos="fade-up">كل ما تحتاجه لمكتبك ودراستك في مكان واحد بأفضل الأسعار والجودة العالية.</p>
-        <a href="index.html" class="back-home-btn hover-target" data-aos="zoom-in"><i class="fas fa-arrow-right"></i> العودة للرئيسية</a>
-    </div>
+    <h1>قسم الأدوات المكتبية</h1>
+    <p>كل ما تحتاجه لمكتبك ودراستك في مكان واحد بأفضل الأسعار</p>
+    <a href="index.html" class="back-home-btn"><i class="fas fa-arrow-right"></i> العودة للرئيسية</a>
 </div>
 
-<div class="offers-ticker">
-    <marquee behavior="scroll" direction="right" scrollamount="6">
-        🎉 خصم 10% للطلبة على جميع الأدوات الهندسية! | 🔥 اشتري 3 رزم ورق واحصل على دليفري مجاني في منطقة المساحة | 🎒 تشكيلة جديدة من الشنط والأدوات المدرسية وصلت الآن!
-    </marquee>
+<div class="filter-container">
+    <button class="filter-btn active" onclick="filterItems('all')">الكل</button>
+    <button class="filter-btn" onclick="filterItems('best')">الأكثر مبيعاً</button>
+    <button class="filter-btn" onclick="filterItems('eng')">أدوات هندسية</button>
+    <button class="filter-btn" onclick="filterItems('office')">مستلزمات مكتبية</button>
 </div>
 
-<div class="filter-container" data-aos="fade-up">
-    <button class="filter-btn active" onclick="filterItems('all')">كل المنتجات</button>
-    <button class="filter-btn" onclick="filterItems('best')">🌟 الأكثر مبيعاً</button>
-    <button class="filter-btn" onclick="filterItems('eng')">📐 أدوات هندسية وفنون</button>
-    <button class="filter-btn" onclick="filterItems('office')">📁 مستلزمات شركات</button>
+<div class="promo-banner" data-aos="zoom-in">
+    <i class="fas fa-gift"></i>
+    <h4>🎁 عرض خاص!</h4>
+    <p>اشتري 3 منتجات من اختيارك واحصل على قلم حبر جاف إضافي هدية + توصيل مجاني للطلبات فوق 500 ج.م</p>
 </div>
 
 <!-- المنتجات الأكثر مبيعاً -->
-<div class="section-padding" id="cat-best" style="padding-top: 0;">
-    <div class="container">
-        <div class="item-card" data-aos="fade-up" data-item-type="best">
-            <div class="badge">الأكثر طلباً</div>
-            <div class="item-icon"><i class="fas fa-pen-fancy"></i></div>
-            <h3>أقلام جاف (طقم 3 ألوان)</h3>
-            <p>أزرق، أسود، أحمر جودة عالية</p>
-            <div class="price">15 ج.م</div>
-            <a href="https://wa.me/201101339148?text=السلام عليكم، عايز أطلب: أقلام جاف (طقم 3 ألوان)" class="order-btn hover-target" target="_blank"><i class="fab fa-whatsapp"></i> اطلب دلوقتي</a>
+<div class="section-padding" id="cat-best">
+    <div class="products-container">
+        <div class="product-card" data-item-type="best">
+            <div class="product-icon"><i class="fas fa-pen-fancy"></i></div>
+            <h3>طقم أقلام جاف (3 ألوان)</h3>
+            <p>أزرق، أسود، أحمر - جودة عالية</p>
+            <div class="product-price">15 ج.م</div>
+            <button class="order-wa-btn" onclick="addToCartAndNotify(1, 'طقم أقلام جاف (3 ألوان)', 15)"><i class="fas fa-cart-plus"></i> أضف للسلة</button>
+            <button class="order-wa-btn" style="background: #3b82f6; margin-top: 8px;" onclick="toggleWishlist(1, 'طقم أقلام جاف (3 ألوان)', 15)"><i class="far fa-heart"></i> أضف للمفضلة</button>
         </div>
-
-        <div class="item-card" data-aos="fade-up" data-aos-delay="100" data-item-type="best">
-            <div class="badge badge-new">خصم خاص</div>
-            <div class="item-icon"><i class="fas fa-file-alt"></i></div>
+        <div class="product-card" data-item-type="best">
+            <div class="product-icon"><i class="fas fa-file-alt"></i></div>
             <h3>رزمة ورق A4</h3>
-            <p>80 جرام، 500 ورقة ممتازة للطباعة</p>
-            <div class="price">250 ج.م</div>
-            <a href="https://wa.me/201101339148?text=السلام عليكم، عايز أطلب: رزمة ورق A4" class="order-btn hover-target" target="_blank"><i class="fab fa-whatsapp"></i> اطلب دلوقتي</a>
+            <p>80 جرام، 500 ورقة - ممتازة للطباعة</p>
+            <div class="product-price">250 ج.م</div>
+            <button class="order-wa-btn" onclick="addToCartAndNotify(2, 'رزمة ورق A4', 250)"><i class="fas fa-cart-plus"></i> أضف للسلة</button>
+            <button class="order-wa-btn" style="background: #3b82f6; margin-top: 8px;" onclick="toggleWishlist(2, 'رزمة ورق A4', 250)"><i class="far fa-heart"></i> أضف للمفضلة</button>
         </div>
-
-        <div class="item-card" data-aos="fade-up" data-aos-delay="200" data-item-type="best">
-            <div class="item-icon"><i class="fas fa-print"></i></div>
-            <h3>دباسة مكتب</h3>
-            <p>دباسة معدنية قوية للمستندات</p>
-            <div class="price">45 ج.م</div>
-            <a href="https://wa.me/201101339148?text=السلام عليكم، عايز أطلب: دباسة مكتب" class="order-btn hover-target" target="_blank"><i class="fab fa-whatsapp"></i> اطلب دلوقتي</a>
+        <div class="product-card" data-item-type="best">
+            <div class="product-icon"><i class="fas fa-print"></i></div>
+            <h3>دباسة مكتب معدنية</h3>
+            <p>دباسة قوية للمستندات</p>
+            <div class="product-price">45 ج.م</div>
+            <button class="order-wa-btn" onclick="addToCartAndNotify(3, 'دباسة مكتب معدنية', 45)"><i class="fas fa-cart-plus"></i> أضف للسلة</button>
+            <button class="order-wa-btn" style="background: #3b82f6; margin-top: 8px;" onclick="toggleWishlist(3, 'دباسة مكتب معدنية', 45)"><i class="far fa-heart"></i> أضف للمفضلة</button>
         </div>
-        
-        <div class="item-card" data-aos="fade-up" data-aos-delay="300" data-item-type="best">
-            <div class="item-icon"><i class="fas fa-calculator"></i></div>
+        <div class="product-card" data-item-type="best">
+            <div class="product-icon"><i class="fas fa-calculator"></i></div>
             <h3>آلة حاسبة علمية كاسيو</h3>
-            <p>أصلية بضمان شامل للطلبة والمهندسين</p>
-            <div class="price">يبدأ من 450 ج.م</div>
-            <a href="https://wa.me/201101339148?text=السلام عليكم، عايز أسأل عن: الآلة الحاسبة العلمية" class="order-btn hover-target" target="_blank"><i class="fab fa-whatsapp"></i> اطلب دلوقتي</a>
+            <p>أصلية بضمان شامل</p>
+            <div class="product-price">450 ج.م</div>
+            <button class="order-wa-btn" onclick="addToCartAndNotify(4, 'آلة حاسبة علمية كاسيو', 450)"><i class="fas fa-cart-plus"></i> أضف للسلة</button>
+            <button class="order-wa-btn" style="background: #3b82f6; margin-top: 8px;" onclick="toggleWishlist(4, 'آلة حاسبة علمية كاسيو', 450)"><i class="far fa-heart"></i> أضف للمفضلة</button>
         </div>
     </div>
 </div>
 
-<!-- أدوات المهندسين والفنون -->
-<div class="section-padding" id="cat-eng" style="padding-top: 0;">
-    <div class="container">
-        <div class="item-card" style="border-bottom-color: #3498db;" data-aos="zoom-in" data-item-type="eng">
-            <div class="item-icon" style="color: #3498db;"><i class="fas fa-ruler-combined"></i></div>
+<!-- أدوات هندسية -->
+<div class="section-padding" id="cat-eng">
+    <div class="products-container">
+        <div class="product-card" data-item-type="eng">
+            <div class="product-icon"><i class="fas fa-ruler-combined"></i></div>
             <h3>طقم مساطر هندسية</h3>
-            <p>مساطر مرنة ومتينة لجميع التخصصات الهندسية</p>
-            <div class="price">35 ج.م</div>
-            <a href="https://wa.me/201101339148?text=السلام عليكم، عايز أطلب: طقم مساطر هندسية" class="order-btn hover-target" target="_blank"><i class="fab fa-whatsapp"></i> اطلب دلوقتي</a>
+            <p>مساطر مرنة ومتينة لجميع التخصصات</p>
+            <div class="product-price">35 ج.م</div>
+            <button class="order-wa-btn" onclick="addToCartAndNotify(5, 'طقم مساطر هندسية', 35)"><i class="fas fa-cart-plus"></i> أضف للسلة</button>
+            <button class="order-wa-btn" style="background: #3b82f6; margin-top: 8px;" onclick="toggleWishlist(5, 'طقم مساطر هندسية', 35)"><i class="far fa-heart"></i> أضف للمفضلة</button>
         </div>
-
-        <div class="item-card" style="border-bottom-color: #3498db;" data-aos="zoom-in" data-aos-delay="100" data-item-type="eng">
-            <div class="item-icon" style="color: #3498db;"><i class="fas fa-palette"></i></div>
+        <div class="product-card" data-item-type="eng">
+            <div class="product-icon"><i class="fas fa-palette"></i></div>
             <h3>كراسة رسم (اسكتش) A3</h3>
-            <p>ورق كانسون ثقيل مخصص للرسم والألوان</p>
-            <div class="price">55 ج.م</div>
-            <a href="https://wa.me/201101339148?text=السلام عليكم، عايز أطلب: اسكتش رسم A3" class="order-btn hover-target" target="_blank"><i class="fab fa-whatsapp"></i> اطلب دلوقتي</a>
+            <p>ورق كانسون ثقيل للرسم والألوان</p>
+            <div class="product-price">55 ج.م</div>
+            <button class="order-wa-btn" onclick="addToCartAndNotify(6, 'كراسة رسم A3', 55)"><i class="fas fa-cart-plus"></i> أضف للسلة</button>
+            <button class="order-wa-btn" style="background: #3b82f6; margin-top: 8px;" onclick="toggleWishlist(6, 'كراسة رسم A3', 55)"><i class="far fa-heart"></i> أضف للمفضلة</button>
         </div>
-
-        <div class="item-card" style="border-bottom-color: #3498db;" data-aos="zoom-in" data-aos-delay="200" data-item-type="eng">
-            <div class="item-icon" style="color: #3498db;"><i class="fas fa-paint-brush"></i></div>
-            <h3>أقلام تحبير فايبر كاستل</h3>
-            <p>طقم أقلام تحبير سنون متعددة المقاسات</p>
-            <div class="price">85 ج.م</div>
-            <a href="https://wa.me/201101339148?text=السلام عليكم، عايز أطلب: طقم أقلام تحبير" class="order-btn hover-target" target="_blank"><i class="fab fa-whatsapp"></i> اطلب دلوقتي</a>
+        <div class="product-card" data-item-type="eng">
+            <div class="product-icon"><i class="fas fa-paint-brush"></i></div>
+            <h3>طقم أقلام تحبير (5 سنون)</h3>
+            <p>أقلام تحبير فاخرة متعددة المقاسات</p>
+            <div class="product-price">85 ج.م</div>
+            <button class="order-wa-btn" onclick="addToCartAndNotify(7, 'طقم أقلام تحبير (5 سنون)', 85)"><i class="fas fa-cart-plus"></i> أضف للسلة</button>
+            <button class="order-wa-btn" style="background: #3b82f6; margin-top: 8px;" onclick="toggleWishlist(7, 'طقم أقلام تحبير (5 سنون)', 85)"><i class="far fa-heart"></i> أضف للمفضلة</button>
         </div>
     </div>
 </div>
 
-<!-- مستلزمات تنظيم الشركات -->
-<div class="section-padding" id="cat-office" style="padding-top: 0;">
-    <div class="container">
-        <div class="item-card" style="border-bottom-color: #f1c40f;" data-aos="fade-right" data-item-type="office">
-            <div class="item-icon" style="color: #f1c40f;"><i class="fas fa-folder-open"></i></div>
+<!-- مستلزمات مكتبية -->
+<div class="section-padding" id="cat-office">
+    <div class="products-container">
+        <div class="product-card" data-item-type="office">
+            <div class="product-icon"><i class="fas fa-folder-open"></i></div>
             <h3>فايل كبسولة بلاستيك</h3>
-            <p>لحفظ الورق والمستندات بألوان شفافة وجذابة</p>
-            <div class="price">10 ج.م</div>
-            <a href="https://wa.me/201101339148?text=السلام عليكم، عايز أطلب: فايل كبسولة" class="order-btn hover-target" target="_blank"><i class="fab fa-whatsapp"></i> اطلب دلوقتي</a>
+            <p>لحفظ الورق والمستندات - شفاف</p>
+            <div class="product-price">10 ج.م</div>
+            <button class="order-wa-btn" onclick="addToCartAndNotify(8, 'فايل كبسولة بلاستيك', 10)"><i class="fas fa-cart-plus"></i> أضف للسلة</button>
+            <button class="order-wa-btn" style="background: #3b82f6; margin-top: 8px;" onclick="toggleWishlist(8, 'فايل كبسولة بلاستيك', 10)"><i class="far fa-heart"></i> أضف للمفضلة</button>
         </div>
-
-        <div class="item-card" style="border-bottom-color: #f1c40f;" data-aos="fade-up" data-item-type="office">
-            <div class="item-icon" style="color: #f1c40f;"><i class="fas fa-sitemap"></i></div>
+        <div class="product-card" data-item-type="office">
+            <div class="product-icon"><i class="fas fa-sitemap"></i></div>
             <h3>منظم مكتب معدني (أورجنايزر)</h3>
-            <p>لحفظ الأقلام والدبابيس وترتيب المكتب</p>
-            <div class="price">65 ج.م</div>
-            <a href="https://wa.me/201101339148?text=السلام عليكم، عايز أطلب: منظم مكتب معدني" class="order-btn hover-target" target="_blank"><i class="fab fa-whatsapp"></i> اطلب دلوقتي</a>
+            <p>لحفظ الأقلام والدبابيس</p>
+            <div class="product-price">65 ج.م</div>
+            <button class="order-wa-btn" onclick="addToCartAndNotify(9, 'منظم مكتب معدني', 65)"><i class="fas fa-cart-plus"></i> أضف للسلة</button>
+            <button class="order-wa-btn" style="background: #3b82f6; margin-top: 8px;" onclick="toggleWishlist(9, 'منظم مكتب معدني', 65)"><i class="far fa-heart"></i> أضف للمفضلة</button>
         </div>
-
-        <div class="item-card" style="border-bottom-color: #f1c40f;" data-aos="fade-left" data-item-type="office">
-            <div class="item-icon" style="color: #f1c40f;"><i class="fas fa-paste"></i></div>
-            <h3>دوسيه بلاستيك حرف U</h3>
-            <p>عبوة 100 حافظة بلاستيكية شفافة</p>
-            <div class="price">75 ج.م</div>
-            <a href="https://wa.me/201101339148?text=السلام عليكم، عايز أطلب: عبوة دوسيه حرف U" class="order-btn hover-target" target="_blank"><i class="fab fa-whatsapp"></i> اطلب دلوقتي</a>
+        <div class="product-card" data-item-type="office">
+            <div class="product-icon"><i class="fas fa-paste"></i></div>
+            <h3>دوسيه بلاستيك حرف U (عبوة 100)</h3>
+            <p>حافظات بلاستيكية شفافة</p>
+            <div class="product-price">75 ج.م</div>
+            <button class="order-wa-btn" onclick="addToCartAndNotify(10, 'دوسيه بلاستيك حرف U (عبوة 100)', 75)"><i class="fas fa-cart-plus"></i> أضف للسلة</button>
+            <button class="order-wa-btn" style="background: #3b82f6; margin-top: 8px;" onclick="toggleWishlist(10, 'دوسيه بلاستيك حرف U (عبوة 100)', 75)"><i class="far fa-heart"></i> أضف للمفضلة</button>
         </div>
     </div>
 </div>
-
-<!-- صندوق اللستة المخصصة -->
-<div class="custom-list-section" data-aos="zoom-in">
-    <h3><i class="fas fa-clipboard-list"></i> مش لاقي أدواتك؟ جهّز لستتك المخصصة هنا</h3>
-    <p>اكتب أسماء الأدوات أو الكميات اللي محتاجها بره القائمة دي، وإحنا هنجهزهالك في فرع المساحة فوراً!</p>
-    <textarea id="custom-items-text" class="custom-textarea" placeholder="اكتب هنا مثلاً: كشكول سلك 100 ورقة، قلم روترنج هندسي، صمغ يو هو..."></textarea>
-    <button onclick="sendCustomStationeryList()" class="send-list-btn hover-target"><i class="fab fa-whatsapp"></i> إرسال اللستة عبر الواتساب</button>
-</div>
-
-<a href="https://wa.me/201101339148" class="floating-wa hover-target" target="_blank" title="تواصل معنا على الواتساب">
-    <i class="fab fa-whatsapp"></i>
-</a>
 
 <div class="footer">
     <p>📍 زيروكس المساحة - ميدان المساحة، الدقي، الجيزة</p>
     <p>📞 للدعم والاستفسار السريع: 01101339148 | 📧 xerox_elmesaha@yahoo.com</p>
-    <p style="font-size: 14px; opacity: 0.6; margin-top: 20px;">كل اللي تحتاجه، موجود عندنا في <strong>زيروكس المساحة</strong></p>
+    <p style="font-size: 14px; opacity: 0.6;">© 2026 مركز منصور المتكامل - جميع الحقوق محفوظة</p>
+</div>
+
+<a href="https://wa.me/201101339148" class="floating-wa" target="_blank"><i class="fab fa-whatsapp"></i></a>
+
+<div id="cart-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal('cart-modal')">×</span>
+        <h3>🛒 سلة المشتريات</h3>
+        <div id="cartItemsList"></div>
+        <div id="cartTotal" style="font-weight: bold; margin-top: 15px;"></div>
+        <div style="margin-top: 20px; background: #f8fafc; padding: 15px; border-radius: 15px;">
+            <input type="text" id="clientName" placeholder="اسمك الكريم" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #cbd5e1; border-radius:8px;">
+            <input type="tel" id="clientPhone" placeholder="رقم التليفون" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #cbd5e1; border-radius:8px;">
+            <input type="text" id="clientAddress" placeholder="العنوان (أو استلام من الفرع)" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:8px;">
+        </div>
+        <button class="checkout-btn" style="background:#25D366; color:white; padding:15px; border-radius:50px; width:100%; margin-top:20px; border:none;" onclick="checkoutCart()">📦 إرسال الأوردر للواتساب</button>
+    </div>
+</div>
+
+<div id="wishlist-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal('wishlist-modal')">×</span>
+        <h3>❤️ المفضلة</h3>
+        <div id="wishlistItemsList"></div>
+        <button class="checkout-btn" style="background:#3b82f6; color:white; padding:15px; border-radius:50px; width:100%; margin-top:20px; border:none;" onclick="moveAllWishToCart()">➕ نقل الكل إلى السلة</button>
+    </div>
 </div>
 
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
-    AOS.init({ duration: 800, once: false, mirror: true });
+    AOS.init({ duration: 800, once: true });
 
-    // المؤشر المخصص
-    const cursor = document.getElementById('customCursor');
-    document.addEventListener('mousemove', e => { cursor.style.left = e.clientX + 'px'; cursor.style.top = e.clientY + 'px'; });
-    document.querySelectorAll('.hover-target, button, a').forEach(target => {
-        target.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
-        target.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
-    });
-
-    // شريط التقدم
-    window.onscroll = () => { 
-        let wScroll = document.body.scrollTop || document.documentElement.scrollTop; 
-        let height = document.documentElement.scrollHeight - document.documentElement.clientHeight; 
-        document.getElementById("progress-bar").style.width = (wScroll / height) * 100 + "%"; 
+    window.onscroll = function() {
+        let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        let progress = document.getElementById("progress-bar");
+        if (progress) progress.style.width = (winScroll / height) * 100 + "%";
     };
 
-    // فلترة المنتجات
+    function openModal(id) { document.getElementById(id).style.display = "block"; renderCartModal(); renderWishlistModal(); }
+    function closeModal(id) { document.getElementById(id).style.display = "none"; }
+    window.onclick = function(e) { if (e.target.classList && e.target.classList.contains('modal')) e.target.style.display = 'none'; }
+
+    let cart = JSON.parse(localStorage.getItem('advancedCart')) || [];
+    let wishlist = JSON.parse(localStorage.getItem('advancedWishlist')) || [];
+
+    function saveAll() {
+        localStorage.setItem('advancedCart', JSON.stringify(cart));
+        localStorage.setItem('advancedWishlist', JSON.stringify(wishlist));
+        updateCounters();
+        renderCartModal();
+        renderWishlistModal();
+    }
+
+    function updateCounters() {
+        let cartQty = cart.reduce((sum, i) => sum + i.quantity, 0);
+        let wishCount = wishlist.length;
+        document.getElementById('cartCountNav').innerText = cartQty;
+        document.getElementById('wishCountNav').innerText = wishCount;
+    }
+
+    function addToCart(id, name, price) {
+        let existing = cart.find(i => i.id == id);
+        if (existing) existing.quantity++;
+        else cart.push({ id: id, name: name, price: price, quantity: 1 });
+        saveAll();
+    }
+
+    function addToCartAndNotify(id, name, price) {
+        addToCart(id, name, price);
+        alert(`✅ تمت إضافة "${name}" إلى سلة المشتريات!`);
+    }
+
+    function removeFromCart(id) { cart = cart.filter(i => i.id != id); saveAll(); }
+    function updateQty(id, delta) {
+        let item = cart.find(i => i.id == id);
+        if (item) { item.quantity += delta; if (item.quantity <= 0) removeFromCart(id); else saveAll(); }
+    }
+
+    function toggleWishlist(id, name, price) {
+        let index = wishlist.findIndex(w => w.id == id);
+        if (index === -1) wishlist.push({ id: id, name: name, price: price });
+        else wishlist.splice(index, 1);
+        saveAll();
+    }
+
+    function moveAllWishToCart() {
+        wishlist.forEach(prod => {
+            let ex = cart.find(i => i.id == prod.id);
+            if (ex) ex.quantity++;
+            else cart.push({ id: prod.id, name: prod.name, price: prod.price, quantity: 1 });
+        });
+        wishlist = [];
+        saveAll();
+    }
+
+    function renderCartModal() {
+        let div = document.getElementById('cartItemsList');
+        if (!div) return;
+        if (cart.length === 0) { div.innerHTML = '<p style="text-align:center; padding:20px;">السلة فارغة حالياً</p>'; document.getElementById('cartTotal').innerHTML = ''; return; }
+        let html = '', total = 0;
+        cart.forEach(item => {
+            let itemTotal = item.price * item.quantity;
+            total += itemTotal;
+            html += `<div style="display:flex; justify-content:space-between; align-items:center; padding:15px 0; border-bottom:1px solid #e2e8f0; flex-wrap:wrap;">
+                        <div><strong>${item.name}</strong><br>${item.price} ج.م × ${item.quantity} = <span style="color:#f97316; font-weight:900">${itemTotal} ج.م</span></div>
+                        <div style="display:flex; gap:8px;">
+                            <button class="btn-cart" style="background:#eff6ff; color:#3b82f6; border:none; padding:5px 12px; border-radius:8px;" onclick="updateQty(${item.id},1)">+</button>
+                            <button class="btn-cart" style="background:#eff6ff; color:#3b82f6; border:none; padding:5px 12px; border-radius:8px;" onclick="updateQty(${item.id},-1)">-</button>
+                            <button class="btn-wish" style="background:#fef2f2; color:#ef4444; border:none; padding:5px 12px; border-radius:8px;" onclick="removeFromCart(${item.id})"><i class="fas fa-trash-alt"></i></button>
+                        </div>
+                    </div>`;
+        });
+        div.innerHTML = html;
+        document.getElementById('cartTotal').innerHTML = `<strong>الإجمالي النهائي:</strong> ${total} ج.م`;
+    }
+
+    function renderWishlistModal() {
+        let div = document.getElementById('wishlistItemsList');
+        if (!div) return;
+        if (wishlist.length === 0) { div.innerHTML = '<p style="text-align:center; padding:20px;">لا توجد منتجات في المفضلة</p>'; return; }
+        let html = '';
+        wishlist.forEach(item => {
+            html += `<div style="display:flex; justify-content:space-between; align-items:center; padding:15px 0; border-bottom:1px solid #e2e8f0; flex-wrap:wrap;">
+                        <div><strong>${item.name}</strong><br>${item.price} ج.م</div>
+                        <div style="display:flex; gap:8px;">
+                            <button class="btn-cart" style="background:#eff6ff; color:#3b82f6; border:none; padding:5px 12px; border-radius:8px;" onclick="addToCartAndNotify(${item.id}, '${item.name}', ${item.price})">➕ للسلة</button>
+                            <button class="btn-wish" style="background:#fef2f2; color:#ef4444; border:none; padding:5px 12px; border-radius:8px;" onclick="toggleWishlist(${item.id}, '${item.name}', ${item.price})"><i class="fas fa-trash-alt"></i></button>
+                        </div>
+                    </div>`;
+        });
+        div.innerHTML = html;
+    }
+
+    function checkoutCart() {
+        if (cart.length === 0) return;
+        let name = document.getElementById('clientName').value.trim();
+        let phone = document.getElementById('clientPhone').value.trim();
+        let address = document.getElementById('clientAddress').value.trim();
+        if (!name || !phone || !address) { alert('من فضلك املأ بيانات الاستلام أولاً!'); return; }
+        let msg = `🚨 *أوردر جديد من زيروكس المساحة* 🚨\n\n👤 *العميل:* ${name}\n📞 *التليفون:* ${phone}\n📍 *العنوان:* ${address}\n📅 *التاريخ:* ${new Date().toLocaleString('ar-EG')}\n\n📦 *المنتجات:*\n`;
+        cart.forEach(i => { msg += `- ${i.name} (الكمية: ${i.quantity} × ${i.price} ج.م) = ${i.price * i.quantity} ج.م\n`; });
+        let total = cart.reduce((a, b) => a + (b.price * b.quantity), 0);
+        msg += `\n💵 *الإجمالي:* ${total} ج.م`;
+        window.open(`https://wa.me/201101339148?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+
     function filterItems(category) {
-        const buttons = document.querySelectorAll('.filter-btn');
-        buttons.forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
         event.target.classList.add('active');
-
-        const bestContainer = document.getElementById('cat-best');
-        const engContainer = document.getElementById('cat-eng');
-        const officeContainer = document.getElementById('cat-office');
-        const allCards = document.querySelectorAll('.item-card');
-
+        let bestDiv = document.getElementById('cat-best');
+        let engDiv = document.getElementById('cat-eng');
+        let officeDiv = document.getElementById('cat-office');
+        let allCards = document.querySelectorAll('.product-card');
         if (category === 'all') {
-            bestContainer.style.display = 'block';
-            engContainer.style.display = 'block';
-            officeContainer.style.display = 'block';
+            bestDiv.style.display = 'block'; engDiv.style.display = 'block'; officeDiv.style.display = 'block';
             allCards.forEach(card => card.style.display = 'flex');
         } else {
-            bestContainer.style.display = 'none';
-            engContainer.style.display = 'none';
-            officeContainer.style.display = 'none';
-
-            if (category === 'best') bestContainer.style.display = 'block';
-            if (category === 'eng') engContainer.style.display = 'block';
-            if (category === 'office') officeContainer.style.display = 'block';
-
+            bestDiv.style.display = 'none'; engDiv.style.display = 'none'; officeDiv.style.display = 'none';
+            if (category === 'best') bestDiv.style.display = 'block';
+            if (category === 'eng') engDiv.style.display = 'block';
+            if (category === 'office') officeDiv.style.display = 'block';
             allCards.forEach(card => {
-                if (card.getAttribute('data-item-type') === category) {
-                    card.style.display = 'flex';
-                } else {
-                    card.style.display = 'none';
-                }
+                card.style.display = card.getAttribute('data-item-type') === category ? 'flex' : 'none';
             });
         }
     }
 
-    // إرسال اللستة المخصصة عبر الواتساب
-    function sendCustomStationeryList() {
-        const userText = document.getElementById('custom-items-text').value;
-        if (!userText.trim()) {
-            alert('من فضلك اكتب طلباتك أولاً جوه الصندوق لكي نجهزها لك!');
-            return;
-        }
-        const encodedText = encodeURIComponent("السلام عليكم، دي لستة أدوات مكتبية مخصصة محتاجها من فرع المساحة:\n" + userText);
-        window.open(`https://wa.me/201101339148?text=${encodedText}`, '_blank');
-    }
+    updateCounters();
+    renderCartModal();
+    renderWishlistModal();
 </script>
 </body>
 </html>

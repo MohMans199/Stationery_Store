@@ -2,292 +2,514 @@
 <html dir="rtl" lang="ar">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>الخدمات الإلكترونية - زيروكس المساحة</title>
     
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; background-color: #f4f7f6; overflow-x: hidden; }
-        
-        /* شريط التنقل الموحد */
-        .navbar { background-color: #1a252f; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; color: white; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.2);}
-        .navbar .logo { font-size: 24px; font-weight: bold; color: #f1c40f; }
-        .navbar .links a { color: #ecf0f1; text-decoration: none; margin-right: 20px; font-weight: bold; transition: 0.3s;}
-        .navbar .links a:hover { color: #3498db; }
-        
-        /* واجهة الخدمات الإلكترونية */
-        .services-hero { 
-            background: linear-gradient(rgba(44, 62, 80, 0.85), rgba(26, 37, 47, 0.95)), url('https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat; 
-            color: white; padding: 100px 20px; text-align: center; position: relative;
+        body { font-family: 'Cairo', sans-serif; background: #f8fafc; color: #0f172a; overflow-x: hidden; line-height: 1.6; }
+
+        #progress-bar { position: fixed; top: 0; left: 0; height: 4px; background: linear-gradient(90deg, #f1c40f, #e67e22); width: 0%; z-index: 9999; transition: width 0.08s linear; }
+
+        .navbar {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(16px);
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            position: sticky;
+            top: 0;
+            z-index: 1100;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
-        .services-hero h1 { font-size: 44px; margin-bottom: 15px; text-shadow: 0 4px 15px rgba(52, 152, 219, 0.6); }
-        .services-hero p { font-size: 20px; opacity: 0.9; max-width: 700px; margin: 0 auto; line-height: 1.6; }
-        .back-home-btn { display: inline-block; margin-top: 25px; padding: 12px 30px; background-color: #f1c40f; color: #1a252f; text-decoration: none; border-radius: 50px; font-weight: bold; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-        .back-home-btn:hover { background-color: #f39c12; transform: translateY(-3px); }
+        .navbar .logo {
+            font-size: clamp(20px, 5vw, 28px);
+            font-weight: 800;
+            background: linear-gradient(135deg, #f1c40f, #e67e22);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .nav-links { display: flex; gap: 20px; flex-wrap: wrap; }
+        .navbar .links a {
+            color: #e2e8f0;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
+            font-size: 16px;
+            position: relative;
+            padding: 5px 0;
+        }
+        .navbar .links a:hover { color: #f1c40f; }
+        .navbar .links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 0;
+            height: 2px;
+            background: #f1c40f;
+            transition: 0.3s;
+        }
+        .navbar .links a:hover::after { width: 100%; }
+        .nav-icons { display: flex; gap: 15px; align-items: center; }
+        .nav-icon { position: relative; color: white; font-size: 22px; transition: 0.3s; cursor: pointer; }
+        .nav-icon:hover { color: #f1c40f; transform: scale(1.05); }
+        .cart-count, .wish-count {
+            position: absolute;
+            top: -10px;
+            right: -12px;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 30px;
+            min-width: 18px;
+            text-align: center;
+        }
+        .menu-toggle { display: none; background: none; border: none; color: white; font-size: 28px; cursor: pointer; }
+        @media (max-width: 768px) {
+            .menu-toggle { display: block; }
+            .nav-links { display: none; width: 100%; flex-direction: column; align-items: center; padding-top: 15px; }
+            .nav-links.show { display: flex; }
+            .navbar .links { display: flex; flex-direction: column; align-items: center; gap: 10px; width: 100%; }
+        }
 
-        /* شريط الثقة والأمان (ابتكار جديد) */
-        .trust-banner { background-color: #27ae60; color: white; padding: 15px; font-size: 16px; font-weight: bold; display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .trust-banner div { display: flex; align-items: center; gap: 8px; }
+        .services-hero {
+            position: relative;
+            background: linear-gradient(115deg, rgba(15,23,42,0.92), rgba(30,41,59,0.88)), url('https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?auto=format&fit=crop&w=1920&q=80') center/cover;
+            color: white;
+            padding: 100px 5%;
+            text-align: center;
+        }
+        .services-hero h1 { font-size: clamp(28px, 8vw, 60px); font-weight: 900; margin-bottom: 15px; }
+        .services-hero p { font-size: clamp(16px, 4vw, 22px); max-width: 800px; margin: 0 auto; opacity: 0.9; }
+        .back-home-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 35px;
+            padding: 12px 30px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 800;
+            font-size: 16px;
+            transition: 0.4s;
+        }
+        .back-home-btn:hover { background: #f1c40f; color: #1a252f; transform: translateY(-3px); }
 
-        /* الأقسام العامة */
-        .section-padding { padding: 70px 20px; }
-        .section-title { color: #2c3e50; margin-bottom: 40px; font-size: 34px; font-weight: bold; position: relative; display: inline-block; }
-        .section-title::after { content: ''; width: 50%; height: 4px; background: #3498db; position: absolute; bottom: -10px; left: 25%; border-radius: 2px; }
-        
-        /* شبكة الخدمات المبتكرة */
-        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; width: 90%; max-width: 1200px; margin: 0 auto; }
-        
-        .premium-card { background: white; border-radius: 20px; padding: 35px 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); transition: 0.4s; text-align: right; border-right: 5px solid #3498db; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between;}
-        .premium-card::before { content: ''; position: absolute; top: 0; right: 0; width: 100%; height: 100%; background: linear-gradient(to left, rgba(52,152,219,0.05), transparent); z-index: 0; }
-        .premium-card:hover { transform: translateY(-10px); box-shadow: 0 15px 40px rgba(0,0,0,0.12); border-right-color: #f1c40f; }
-        
-        .card-content { position: relative; z-index: 1; }
-        .card-icon { width: 70px; height: 70px; background: #f4f7f6; border-radius: 15px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; color: #3498db; font-size: 32px; transition: 0.4s; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        .premium-card:hover .card-icon { background: #3498db; color: white; transform: rotateY(180deg); }
-        
-        .premium-card h3 { color: #2c3e50; font-size: 24px; margin-bottom: 15px; font-weight: bold; }
-        .premium-card p { color: #666; margin-bottom: 20px; font-size: 15px; line-height: 1.6; }
-        
-        /* أزرار الكروت المزدوجة */
-        .card-buttons { display: flex; gap: 10px; position: relative; z-index: 1; margin-top: 15px; }
-        .service-action-btn { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: #25D366; color: white; text-decoration: none; padding: 10px; border-radius: 8px; font-weight: bold; transition: 0.3s; font-size: 14px; border: none; cursor: pointer; }
-        .service-action-btn:hover { background: #128C7E; }
-        .details-btn { flex: 1; background: #2c3e50; }
-        .details-btn:hover { background: #1a252f; }
+        .trust-banner {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 12px 5%;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+        .trust-banner div { display: flex; align-items: center; gap: 8px; font-size: 14px; }
 
-        /* المودالات (النوافذ المنبثقة للتفاصيل) */
-        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); backdrop-filter: blur(8px); }
-        .modal-content { background-color: #fff; margin: 5% auto; padding: 30px; border-radius: 15px; width: 90%; max-width: 600px; text-align: right; position: relative; animation: fadeInUp 0.4s; }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
-        .close-btn { color: #7f8c8d; position: absolute; left: 20px; top: 20px; font-size: 30px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        .close-btn:hover { color: #e74c3c; }
-        .details-list { list-style: none; padding: 0; margin-top: 20px; }
-        .details-list li { padding: 12px 0; border-bottom: 1px solid #eee; color: #444; font-size: 16px; display: flex; align-items: center; gap: 10px; }
-        .details-list li i { color: #3498db; }
+        .section-padding { padding: 60px 5%; }
+        .section-title {
+            font-size: clamp(22px, 6vw, 42px);
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 40px;
+            background: linear-gradient(135deg, #0f172a, #3b82f6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, #f1c40f, #e67e22);
+            margin: 15px auto 0;
+            border-radius: 10px;
+        }
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            max-width: 1350px;
+            margin: 0 auto;
+        }
+        .premium-card {
+            background: white;
+            border-radius: 20px;
+            padding: 35px 25px;
+            transition: 0.3s;
+            text-align: right;
+            border-bottom: 5px solid #3b82f6;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+        }
+        .premium-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 35px rgba(0,0,0,0.1);
+            border-bottom-color: #f1c40f;
+        }
+        .card-icon {
+            width: 70px;
+            height: 70px;
+            background: #eff6ff;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            color: #3b82f6;
+            font-size: 32px;
+            transition: 0.3s;
+        }
+        .premium-card:hover .card-icon {
+            background: linear-gradient(135deg, #3b82f6, #2dd4bf);
+            color: white;
+        }
+        .premium-card h3 { font-size: 22px; font-weight: 800; margin-bottom: 15px; color: #1e293b; }
+        .premium-card p { color: #64748b; margin-bottom: 20px; font-size: 14px; line-height: 1.6; }
+        .card-buttons { display: flex; gap: 10px; margin-top: auto; }
+        .service-action-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: #25D366;
+            color: white;
+            text-decoration: none;
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 14px;
+            transition: 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        .service-action-btn:hover { background: #128C7E; transform: translateY(-2px); }
+        .details-btn { background: #3b82f6; }
+        .details-btn:hover { background: #2563eb; }
 
-        /* خطوات العمل (How it works) */
-        .steps-section { background: #1a252f; color: white; padding: 70px 20px; }
-        .steps-section .section-title { color: white; }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1300;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15,23,42,0.9);
+            backdrop-filter: blur(10px);
+        }
+        .modal-content {
+            background: white;
+            margin: 5vh auto;
+            padding: 25px;
+            border-radius: 25px;
+            width: 95%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        .close-btn {
+            position: absolute;
+            left: 15px;
+            top: 15px;
+            font-size: 24px;
+            background: #f1f5f9;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .close-btn:hover { background: #ef4444; color: white; }
+        .details-list { list-style: none; margin-top: 20px; }
+        .details-list li { padding: 12px 0; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; gap: 10px; }
+        .details-list li i { color: #10b981; width: 20px; }
+
+        .steps-section {
+            background: #1a252f;
+            color: white;
+            padding: 60px 5%;
+        }
+        .steps-section .section-title { color: white; background: none; -webkit-background-clip: unset; }
         .steps-section .section-title::after { background: #f1c40f; }
-        .steps-container { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; width: 90%; margin: 40px auto 0; }
-        .step-box { text-align: center; width: 220px; }
-        .step-number { width: 60px; height: 60px; background: #f1c40f; color: #1a252f; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; margin: 0 auto 20px; border: 4px solid rgba(255,255,255,0.2); }
-        .step-box h4 { font-size: 20px; margin-bottom: 10px; }
-        .step-box p { font-size: 14px; color: #bdc3c7; line-height: 1.6; }
+        .steps-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            max-width: 1350px;
+            margin: 40px auto 0;
+        }
+        .step-box {
+            text-align: center;
+            flex: 1 1 200px;
+            max-width: 250px;
+        }
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: #f1c40f;
+            color: #1a252f;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 800;
+            margin: 0 auto 20px;
+        }
+        .step-box h4 { font-size: 18px; margin-bottom: 10px; }
+        .step-box p { font-size: 13px; color: #cbd5e1; line-height: 1.6; }
 
-        /* الفوتر */
-        .footer { background-color: #111820; color: #ecf0f1; padding: 40px 20px; text-align: center; }
-        .whatsapp-float { position: fixed; bottom: 30px; right: 30px; background-color: #25D366; color: white; width: 60px; height: 60px; border-radius: 50%; text-align: center; font-size: 35px; line-height: 60px; box-shadow: 2px 2px 15px rgba(0,0,0,0.2); z-index: 9999; animation: floatBounce 2s infinite ease-in-out; transition: 0.3s; }
-        .whatsapp-float:hover { background-color: #128C7E; transform: scale(1.1); animation: none; }
-        @keyframes floatBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .pricing-section { background: #fff; padding: 60px 5%; }
+        .table-container {
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            overflow-x: auto;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+        .pricing-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 500px;
+            background: white;
+            border-radius: 20px;
+        }
+        .pricing-table th, .pricing-table td {
+            padding: 18px 20px;
+            text-align: right;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .pricing-table th { background: #0f172a; color: white; font-weight: 800; font-size: 18px; }
+        .pricing-table tr:hover td { background: #f8fafc; }
+        .price-value { color: #f97316; font-weight: 900; font-size: 18px; }
+
+        .footer {
+            background: linear-gradient(to top, #020617, #0f172a);
+            color: #cbd5e1;
+            padding: 50px 5%;
+            text-align: center;
+        }
+        .footer p { margin-bottom: 10px; font-size: 16px; }
+
+        .floating-wa {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #25D366;
+            color: white;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 999;
+            animation: bounce 2s infinite;
+            text-decoration: none;
+        }
+        .floating-wa:hover { transform: scale(1.1); background: #128C7E; animation: none; }
+        @keyframes bounce { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-8px);} }
+
+        @media (max-width: 600px) {
+            .trust-banner { gap: 15px; font-size: 12px; }
+            .services-grid { gap: 20px; }
+            .premium-card { padding: 25px 20px; }
+            .pricing-table th, .pricing-table td { padding: 12px; font-size: 14px; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="navbar">
-        <div class="logo">زيروكس المساحة</div>
+<div id="progress-bar"></div>
+
+<div class="navbar">
+    <div class="logo">زيروكس المساحة</div>
+    <button class="menu-toggle" onclick="document.querySelector('.nav-links').classList.toggle('show')"><i class="fas fa-bars"></i></button>
+    <div class="nav-links">
         <div class="links">
             <a href="index.html">الرئيسية</a>
             <a href="printing.html">الطباعة والتصوير</a>
             <a href="stationery.html">الأدوات المكتبية</a>
-            <a href="services.html" style="color: #3498db;">خدمات إلكترونية</a>
+            <a href="services.html" style="color:#f1c40f;">خدمات إلكترونية</a>
         </div>
     </div>
-
-    <div class="services-hero">
-        <h1 data-aos="fade-down">الخدمات الإلكترونية والإدارية</h1>
-        <p data-aos="fade-up" data-aos-delay="100">حلول متكاملة تنجز أعمالك بدقة واحترافية، من الصياغة القانونية وحتى الدعم التقني والسوفت وير.</p>
-        <a href="index.html" class="back-home-btn" data-aos="zoom-in" data-aos-delay="200"><i class="fas fa-home"></i> العودة للرئيسية</a>
+    <div class="nav-icons">
+        <div class="nav-icon" onclick="openModal('cart-modal')"><i class="fas fa-shopping-cart"></i><span class="cart-count" id="cartCountNav">0</span></div>
     </div>
+</div>
 
-    <div class="trust-banner" data-aos="fade-up">
-        <div><i class="fas fa-user-shield"></i> سرية تامة لبياناتك</div>
-        <div><i class="fas fa-clock"></i> إنجاز فوري للخدمات</div>
-        <div><i class="fas fa-check-circle"></i> مراجعة دقيقة قبل التسليم</div>
-    </div>
+<div class="services-hero">
+    <h1>الخدمات الإلكترونية والإدارية</h1>
+    <p>حلول متكاملة تنجز أعمالك بدقة واحترافية، من الصياغة القانونية وحتى الدعم التقني والسوفت وير</p>
+    <a href="index.html" class="back-home-btn"><i class="fas fa-arrow-right"></i> العودة للرئيسية</a>
+</div>
 
-    <div class="section-padding">
-        <h2 class="section-title" data-aos="fade-up">خدماتنا المتقدمة</h2>
+<div class="trust-banner" data-aos="fade-up">
+    <div><i class="fas fa-user-shield"></i> سرية تامة لبياناتك</div>
+    <div><i class="fas fa-clock"></i> إنجاز فوري للخدمات</div>
+    <div><i class="fas fa-check-circle"></i> مراجعة دقيقة قبل التسليم</div>
+</div>
+
+<div class="section-padding">
+    <h2 class="section-title" data-aos="fade-down">خدماتنا المتقدمة</h2>
+    <div class="services-grid">
         
-        <div class="services-grid">
-            
-            <div class="premium-card" data-aos="fade-up">
-                <div class="card-content">
-                    <div class="card-icon"><i class="fas fa-file-signature"></i></div>
-                    <h3>صياغة الخطابات والوثائق</h3>
-                    <p>كتابة وصياغة احترافية للطلبات والخطابات الموجهة للجهات الإدارية، الحكومية، والكيانات الدبلوماسية بأسلوب رسمي دقيق.</p>
-                </div>
-                <div class="card-buttons">
-                    <button class="service-action-btn details-btn" onclick="openModal('modal-docs')"><i class="fas fa-list"></i> التفاصيل</button>
-                    <a href="https://wa.me/201101339148?text=أريد%20خدمة%20صياغة%20خطاب%20أو%20طلب%20رسمي" class="service-action-btn" target="_blank"><i class="fab fa-whatsapp"></i> اطلب فوراً</a>
-                </div>
-            </div>
-
-            <div class="premium-card" data-aos="fade-up" data-aos-delay="100" style="border-right-color: #9b59b6;">
-                <div class="card-content">
-                    <div class="card-icon" style="color: #9b59b6;"><i class="fas fa-mobile-alt"></i></div>
-                    <h3>سوفت وير وصيانة برمجية</h3>
-                    <p>حلول برمجية متقدمة للموبايلات، استعادة النظام، تفليش الرومات، وحل مشاكل السوفت وير المعقدة ببرامج متخصصة.</p>
-                </div>
-                <div class="card-buttons">
-                    <button class="service-action-btn details-btn" onclick="openModal('modal-software')"><i class="fas fa-list"></i> التفاصيل</button>
-                    <a href="https://wa.me/201101339148?text=أريد%20استفسار%20عن%20خدمات%20سوفت%20وير%20الموبايل" class="service-action-btn" target="_blank"><i class="fab fa-whatsapp"></i> اطلب فوراً</a>
-                </div>
-            </div>
-
-            <div class="premium-card" data-aos="fade-up" data-aos-delay="150" style="border-right-color: #f1c40f;">
-                <div class="card-content">
-                    <div class="card-icon" style="color: #f1c40f;"><i class="fas fa-id-card"></i></div>
-                    <h3>تصميم السير الذاتية (CV)</h3>
-                    <p>تصميم وكتابة سيرة ذاتية احترافية باللغتين العربية والإنجليزية تتوافق مع أنظمة الشركات (ATS) لضمان قبولك.</p>
-                </div>
-                <div class="card-buttons">
-                    <button class="service-action-btn details-btn" onclick="openModal('modal-cv')"><i class="fas fa-list"></i> التفاصيل</button>
-                    <a href="https://wa.me/201101339148?text=أريد%20عمل%20سيرة%20ذاتية%20(CV)%20احترافية" class="service-action-btn" target="_blank"><i class="fab fa-whatsapp"></i> اطلب فوراً</a>
-                </div>
-            </div>
-
-            <div class="premium-card" data-aos="fade-up" data-aos-delay="200" style="border-right-color: #e74c3c;">
-                <div class="card-content">
-                    <div class="card-icon" style="color: #e74c3c;"><i class="fas fa-file-pdf"></i></div>
-                    <h3>سكانر وتغليف أرشيفي</h3>
-                    <p>سحب المستندات ضوئياً (سكانر) بدقة عالية وتحويلها لـ PDF، بالإضافة لخدمات التغليف الحراري والتكعيب الحلزوني والسلك.</p>
-                </div>
-                <div class="card-buttons">
-                    <button class="service-action-btn details-btn" onclick="openModal('modal-scan')"><i class="fas fa-list"></i> التفاصيل</button>
-                    <a href="https://wa.me/201101339148?text=أريد%20خدمة%20تغليف%20أو%20سكانر" class="service-action-btn" target="_blank"><i class="fab fa-whatsapp"></i> اطلب فوراً</a>
-                </div>
-            </div>
-
-            <div class="premium-card" data-aos="fade-up" data-aos-delay="300" style="border-right-color: #27ae60;">
-                <div class="card-content">
-                    <div class="card-icon" style="color: #27ae60;"><i class="fas fa-globe"></i></div>
-                    <h3>خدمات إلكترونية وحكومية</h3>
-                    <p>مساعدتك في التقديم على الوظائف أونلاين، تنسيق الكليات، استخراج الشهادات، والبحث وجمع المعلومات لعمل الأبحاث.</p>
-                </div>
-                <div class="card-buttons">
-                    <button class="service-action-btn details-btn" onclick="openModal('modal-gov')"><i class="fas fa-list"></i> التفاصيل</button>
-                    <a href="https://wa.me/201101339148?text=أريد%20إنجاز%20خدمة%20إلكترونية" class="service-action-btn" target="_blank"><i class="fab fa-whatsapp"></i> اطلب فوراً</a>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <div id="modal-docs" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal('modal-docs')">×</span>
-            <h3 style="color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px;">تفاصيل صياغة الخطابات</h3>
-            <ul class="details-list">
-                <li><i class="fas fa-check-circle"></i> كتابة طلبات نقل وانتداب للموظفين.</li>
-                <li><i class="fas fa-check-circle"></i> صياغة شكاوى وتظلمات للجهات الحكومية.</li>
-                <li><i class="fas fa-check-circle"></i> خطابات موجهة للسفارات والقنصليات.</li>
-                <li><i class="fas fa-check-circle"></i> تنسيق العقود والاتفاقيات.</li>
-            </ul>
-        </div>
-    </div>
-
-    <div id="modal-software" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal('modal-software')">×</span>
-            <h3 style="color: #2c3e50; border-bottom: 2px solid #9b59b6; padding-bottom: 10px;">خدمات السوفت وير</h3>
-            <ul class="details-list">
-                <li><i class="fas fa-check-circle"></i> تفليش رومات أصلية لمعظم أجهزة الأندرويد.</li>
-                <li><i class="fas fa-check-circle"></i> فك وإزالة حماية حسابات جوجل (FRP).</li>
-                <li><i class="fas fa-check-circle"></i> تحديث أو استرجاع نظام التشغيل.</li>
-                <li><i class="fas fa-check-circle"></i> نقل ونسخ احتياطي للبيانات (Backup).</li>
-            </ul>
-        </div>
-    </div>
-
-    <div id="modal-cv" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal('modal-cv')">×</span>
-            <h3 style="color: #2c3e50; border-bottom: 2px solid #f1c40f; padding-bottom: 10px;">باقات تصميم الـ CV</h3>
-            <ul class="details-list">
-                <li><i class="fas fa-check-circle"></i> CV عربي أو إنجليزي بتصميم عصري (قالب جاهز).</li>
-                <li><i class="fas fa-check-circle"></i> تصميم مخصص متوافق مع أنظمة الشركات (ATS).</li>
-                <li><i class="fas fa-check-circle"></i> كتابة الـ Cover Letter للتقديم على الوظائف.</li>
-                <li><i class="fas fa-check-circle"></i> تعديل وتحديث بيانات سيرة ذاتية قديمة.</li>
-            </ul>
-        </div>
-    </div>
-
-    <div id="modal-scan" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal('modal-scan')">×</span>
-            <h3 style="color: #2c3e50; border-bottom: 2px solid #e74c3c; padding-bottom: 10px;">قائمة التغليف والسكانر</h3>
-            <ul class="details-list">
-                <li><i class="fas fa-check-circle"></i> سكانر بجودة عالية جداً للوثائق والصور وإرسالها PDF.</li>
-                <li><i class="fas fa-check-circle"></i> تغليف حراري للمستندات الهامة لحمايتها من التلف.</li>
-                <li><i class="fas fa-check-circle"></i> تكعيب سلك للملازم والمذكرات الجامعية.</li>
-                <li><i class="fas fa-check-circle"></i> تجميع ودمج ملفات الـ PDF أو تقسيمها.</li>
-            </ul>
-        </div>
-    </div>
-
-    <div id="modal-gov" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal('modal-gov')">×</span>
-            <h3 style="color: #2c3e50; border-bottom: 2px solid #27ae60; padding-bottom: 10px;">الخدمات الإلكترونية</h3>
-            <ul class="details-list">
-                <li><i class="fas fa-check-circle"></i> حجز مواعيد وإدخال بيانات على المواقع الحكومية.</li>
-                <li><i class="fas fa-check-circle"></i> تسجيل تنسيق الجامعات والكليات.</li>
-                <li><i class="fas fa-check-circle"></i> التقديم الإلكتروني للوظائف ومسابقات التعيين.</li>
-                <li><i class="fas fa-check-circle"></i> عمل أبحاث مدرسية وجامعية منسقة وجاهزة للطباعة.</li>
-            </ul>
-        </div>
-    </div>
-
-    <div class="steps-section">
-        <h2 class="section-title" data-aos="zoom-in">إزاي تنجز خدمتك أونلاين؟</h2>
-        <div class="steps-container">
-            <div class="step-box" data-aos="fade-up">
-                <div class="step-number">1</div>
-                <h4>تواصل معانا</h4>
-                <p>ابعتلنا تفاصيل الخدمة اللي محتاجها أو الملفات على الواتساب.</p>
-            </div>
-            <div class="step-box" data-aos="fade-up" data-aos-delay="100">
-                <div class="step-number">2</div>
-                <h4>التنفيذ والمراجعة</h4>
-                <p>بنبداً شغل فوراً وبنراجع معاك الخطوات عشان نضمن دقة التنفيذ.</p>
-            </div>
-            <div class="step-box" data-aos="fade-up" data-aos-delay="200">
-                <div class="step-number">3</div>
-                <h4>الاستلام</h4>
-                <p>هتستلم ملفك على الواتساب أو تيجي الفرع تستلمه مطبوع ومغلف جاهز.</p>
+        <div class="premium-card" data-aos="fade-up">
+            <div class="card-icon"><i class="fas fa-file-signature"></i></div>
+            <h3>صياغة الخطابات والوثائق</h3>
+            <p>كتابة وصياغة احترافية للطلبات والخطابات الموجهة للجهات الإدارية والحكومية بأسلوب رسمي دقيق.</p>
+            <div class="card-buttons">
+                <button class="service-action-btn details-btn" onclick="openModal('modal-docs')"><i class="fas fa-list"></i> التفاصيل</button>
+                <a href="https://wa.me/201101339148?text=أريد%20خدمة%20صياغة%20خطاب%20رسمي" class="service-action-btn" target="_blank"><i class="fab fa-whatsapp"></i> اطلب فوراً</a>
             </div>
         </div>
+
+        <div class="premium-card" data-aos="fade-up" data-aos-delay="100">
+            <div class="card-icon" style="color:#8b5cf6;"><i class="fas fa-mobile-alt"></i></div>
+            <h3>سوفت وير وصيانة برمجية</h3>
+            <p>حلول برمجية متقدمة للموبايلات، استعادة النظام، تفليش الرومات، وحل مشاكل السوفت وير المعقدة.</p>
+            <div class="card-buttons">
+                <button class="service-action-btn details-btn" onclick="openModal('modal-software')"><i class="fas fa-list"></i> التفاصيل</button>
+                <a href="https://wa.me/201101339148?text=أريد%20خدمة%20سوفت%20وير%20للموبايل" class="service-action-btn" target="_blank"><i class="fab fa-whatsapp"></i> اطلب فوراً</a>
+            </div>
+        </div>
+
+        <div class="premium-card" data-aos="fade-up" data-aos-delay="200">
+            <div class="card-icon" style="color:#f1c40f;"><i class="fas fa-id-card"></i></div>
+            <h3>تصميم السير الذاتية (CV)</h3>
+            <p>تصميم وكتابة سيرة ذاتية احترافية باللغتين العربية والإنجليزية تتوافق مع أنظمة الشركات (ATS).</p>
+            <div class="card-buttons">
+                <button class="service-action-btn details-btn" onclick="openModal('modal-cv')"><i class="fas fa-list"></i> التفاصيل</button>
+                <a href="https://wa.me/201101339148?text=أريد%20تصميم%20سيرة%20ذاتية%20احترافية" class="service-action-btn" target="_blank"><i class="fab fa-whatsapp"></i> اطلب فوراً</a>
+            </div>
+        </div>
+
+        <div class="premium-card" data-aos="fade-up" data-aos-delay="300">
+            <div class="card-icon" style="color:#ef4444;"><i class="fas fa-file-pdf"></i></div>
+            <h3>سكانر وتغليف أرشيفي</h3>
+            <p>سحب المستندات ضوئياً بدقة عالية وتحويلها لـ PDF، بالإضافة لخدمات التغليف الحراري والتكعيب.</p>
+            <div class="card-buttons">
+                <button class="service-action-btn details-btn" onclick="openModal('modal-scan')"><i class="fas fa-list"></i> التفاصيل</button>
+                <a href="https://wa.me/201101339148?text=أريد%20خدمة%20سكانر%20وتغليف" class="service-action-btn" target="_blank"><i class="fab fa-whatsapp"></i> اطلب فوراً</a>
+            </div>
+        </div>
+
+        <div class="premium-card" data-aos="fade-up" data-aos-delay="400">
+            <div class="card-icon" style="color:#10b981;"><i class="fas fa-globe"></i></div>
+            <h3>خدمات إلكترونية وحكومية</h3>
+            <p>مساعدتك في التقديم على الوظائف أونلاين، تنسيق الكليات، واستخراج الشهادات الرسمية.</p>
+            <div class="card-buttons">
+                <button class="service-action-btn details-btn" onclick="openModal('modal-gov')"><i class="fas fa-list"></i> التفاصيل</button>
+                <a href="https://wa.me/201101339148?text=أريد%20خدمة%20إلكترونية%20حكومية" class="service-action-btn" target="_blank"><i class="fab fa-whatsapp"></i> اطلب فوراً</a>
+            </div>
+        </div>
+
+        <div class="premium-card" data-aos="fade-up" data-aos-delay="500">
+            <div class="card-icon" style="color:#e67e22;"><i class="fas fa-search"></i></div>
+            <h3>إعداد الأبحاث والملفات</h3>
+            <p>جمع المعلومات، تنسيق الأبحاث المدرسية والجامعية، وترتيب المراجع بشكل احترافي.</p>
+            <div class="card-buttons">
+                <button class="service-action-btn details-btn" onclick="openModal('modal-research')"><i class="fas fa-list"></i> التفاصيل</button>
+                <a href="https://wa.me/201101339148?text=أريد%20مساعدة%20في%20إعداد%20بحث" class="service-action-btn" target="_blank"><i class="fab fa-whatsapp"></i> اطلب فوراً</a>
+            </div>
+        </div>
+
     </div>
+</div>
 
-    <div class="footer">
-        <p>📍 الجيزة - ميدان المساحة (الدقي) | 📞 01101339148</p>
-        <p style="font-size: 14px; opacity: 0.6; margin-top: 10px;">&copy; 2026 مركز منصور المتكامل للخدمات الإلكترونية والطباعة.</p>
+<div class="steps-section" data-aos="fade-up">
+    <h2 class="section-title">إزاي تنجز خدمتك أونلاين؟</h2>
+    <div class="steps-container">
+        <div class="step-box" data-aos="fade-up"><div class="step-number">1</div><h4>تواصل معانا</h4><p>ابعتلنا تفاصيل الخدمة اللي محتاجها على الواتساب</p></div>
+        <div class="step-box" data-aos="fade-up" data-aos-delay="100"><div class="step-number">2</div><h4>التنفيذ والمراجعة</h4><p>بنبداً شغل فوراً وبنراجع معاك الخطوات</p></div>
+        <div class="step-box" data-aos="fade-up" data-aos-delay="200"><div class="step-number">3</div><h4>الاستلام</h4><p>هتستلم ملفك على الواتساب أو تيجي الفرع تستلمه</p></div>
     </div>
+</div>
 
-    <a href="https://wa.me/201101339148" class="whatsapp-float" target="_blank" title="تواصل معنا فوراً">
-        <i class="fab fa-whatsapp"></i>
-    </a>
+<div class="pricing-section" data-aos="fade-up">
+    <h2 class="section-title">قائمة الأسعار التقريبية</h2>
+    <div class="table-container">
+        <table class="pricing-table">
+            <thead><tr><th>الخدمة</th><th>السعر التقريبي</th></tr></thead>
+            <tbody>
+                <tr><td>صياغة خطاب رسمي</td><td class="price-value">يبدأ من 50 ج.م</td></tr>
+                <tr><td>تفليش رومات موبايل</td><td class="price-value">يبدأ من 100 ج.م</td></tr>
+                <tr><td>سيرة ذاتية (CV) احترافية</td><td class="price-value">يبدأ من 75 ج.م</td></tr>
+                <tr><td>سكانر وتغليف حراري (أرشيف)</td><td class="price-value">يبدأ من 15 ج.م</td></tr>
+                <tr><td>خدمة إلكترونية حكومية (تسجيل/تقديم)</td><td class="price-value">يبدأ من 30 ج.م</td></tr>
+                <tr><td>تنسيق بحث جامعي (كل 10 صفحات)</td><td class="price-value">50 ج.م</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
 
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script>
-        AOS.init({ duration: 1000, once: false, mirror: true });
+<div class="footer">
+    <p>📍 الجيزة - ميدان المساحة (الدقي) | 📞 01101339148 | 📧 xerox_elmesaha@yahoo.com</p>
+    <p style="font-size: 14px; opacity: 0.6;">© 2026 مركز منصور المتكامل – جميع الحقوق محفوظة</p>
+</div>
 
-        // دوال التحكم في النوافذ المنبثقة
-        function openModal(modalId) { 
-            document.getElementById(modalId).style.display = "block"; 
-        }
-        function closeModal(modalId) { 
-            document.getElementById(modalId).style.display = "none"; 
-        }
-        window.onclick = function(event) { 
-            if (event.target.classList.contains('modal')) { 
-                event.target.style.display = "none"; 
-            } 
-        }
-    </script>
+<a href="https://wa.me/201101339148" class="floating-wa" target="_blank"><i class="fab fa-whatsapp"></i></a>
+
+<!-- المودالات -->
+<div id="modal-docs" class="modal"><div class="modal-content"><span class="close-btn" onclick="closeModal('modal-docs')">×</span><h3>📄 صياغة الخطابات</h3><ul class="details-list"><li><i class="fas fa-check-circle"></i> كتابة طلبات نقل وانتداب</li><li><i class="fas fa-check-circle"></i> صياغة شكاوى وتظلمات للجهات الحكومية</li><li><i class="fas fa-check-circle"></i> خطابات للسفارات والقنصليات</li><li><i class="fas fa-check-circle"></i> تنسيق العقود والاتفاقيات</li></ul></div></div>
+<div id="modal-software" class="modal"><div class="modal-content"><span class="close-btn" onclick="closeModal('modal-software')">×</span><h3>📱 خدمات السوفت وير</h3><ul class="details-list"><li><i class="fas fa-check-circle"></i> تفليش رومات أصلية للأندرويد</li><li><i class="fas fa-check-circle"></i> فك حماية حسابات جوجل (FRP)</li><li><i class="fas fa-check-circle"></i> تحديث أو استرجاع نظام التشغيل</li><li><i class="fas fa-check-circle"></i> نقل ونسخ احتياطي للبيانات</li></ul></div></div>
+<div id="modal-cv" class="modal"><div class="modal-content"><span class="close-btn" onclick="closeModal('modal-cv')">×</span><h3>📝 تصميم السيرة الذاتية</h3><ul class="details-list"><li><i class="fas fa-check-circle"></i> CV عربي أو إنجليزي بتصميم عصري</li><li><i class="fas fa-check-circle"></i> تصميم مخصص متوافق مع أنظمة ATS</li><li><i class="fas fa-check-circle"></i> كتابة Cover Letter</li><li><i class="fas fa-check-circle"></i> تعديل وتحديث سيرة ذاتية قديمة</li></ul></div></div>
+<div id="modal-scan" class="modal"><div class="modal-content"><span class="close-btn" onclick="closeModal('modal-scan')">×</span><h3>📎 سكانر وتغليف</h3><ul class="details-list"><li><i class="fas fa-check-circle"></i> سكانر بجودة عالية للمستندات</li><li><i class="fas fa-check-circle"></i> تغليف حراري لحماية المستندات</li><li><i class="fas fa-check-circle"></i> تكعيب سلك للملازم والمذكرات</li><li><i class="fas fa-check-circle"></i> دمج وتقسيم ملفات PDF</li></ul></div></div>
+<div id="modal-gov" class="modal"><div class="modal-content"><span class="close-btn" onclick="closeModal('modal-gov')">×</span><h3>🏛️ الخدمات الإلكترونية</h3><ul class="details-list"><li><i class="fas fa-check-circle"></i> حجز مواعيد على المواقع الحكومية</li><li><i class="fas fa-check-circle"></i> تسجيل تنسيق الجامعات</li><li><i class="fas fa-check-circle"></i> التقديم الإلكتروني للوظائف</li><li><i class="fas fa-check-circle"></i> استخراج شهادات رسمية</li></ul></div></div>
+<div id="modal-research" class="modal"><div class="modal-content"><span class="close-btn" onclick="closeModal('modal-research')">×</span><h3>📚 إعداد الأبحاث</h3><ul class="details-list"><li><i class="fas fa-check-circle"></i> جمع المعلومات من مصادر موثوقة</li><li><i class="fas fa-check-circle"></i> تنسيق الأبحاث المدرسية والجامعية</li><li><i class="fas fa-check-circle"></i> ترتيب المراجع والاقتباسات</li><li><i class="fas fa-check-circle"></i> مراجعة لغوية وتدقيق</li></ul></div></div>
+
+<div id="cart-modal" class="modal" style="display:none;"><div style="background:white; margin:5vh auto; padding:25px; border-radius:25px; width:95%; max-width:600px;"><span style="position:absolute; left:15px; top:15px; font-size:24px; background:#f1f5f9; width:35px; height:35px; display:flex; align-items:center; justify-content:center; border-radius:50%; cursor:pointer;" onclick="closeModal('cart-modal')">×</span><h3>🛒 سلة المشتريات</h3><div id="cartItemsList"></div><div id="cartTotal" style="margin-top:15px;"></div></div></div>
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    AOS.init({ duration: 800, once: true });
+
+    window.onscroll = function() {
+        let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        let progress = document.getElementById("progress-bar");
+        if (progress) progress.style.width = (winScroll / height) * 100 + "%";
+    };
+
+    function openModal(id) { document.getElementById(id).style.display = "block"; }
+    function closeModal(id) { document.getElementById(id).style.display = "none"; }
+    window.onclick = function(e) { if (e.target.classList && e.target.classList.contains('modal')) e.target.style.display = 'none'; }
+
+    let cart = JSON.parse(localStorage.getItem('servicesCart')) || [];
+    function saveCart() { localStorage.setItem('servicesCart', JSON.stringify(cart)); updateCounters(); renderCartModal(); }
+    function updateCounters() { document.getElementById('cartCountNav').innerText = cart.reduce((s,i)=>s+i.quantity,0); }
+    function addToCart(id, name, price) { let ex = cart.find(i=>i.id==id); if(ex) ex.quantity++; else cart.push({id, name, price, quantity:1}); saveCart(); }
+    function removeFromCart(id) { cart = cart.filter(i=>i.id!=id); saveCart(); }
+    function updateQty(id, d) { let i = cart.find(i=>i.id==id); if(i){ i.quantity+=d; if(i.quantity<=0) removeFromCart(id); else saveCart(); } }
+    function renderCartModal() { let div=document.getElementById('cartItemsList'); if(!div) return; if(cart.length===0){ div.innerHTML='<p>السلة فارغة</p>'; document.getElementById('cartTotal').innerHTML=''; return; } let html='',total=0; cart.forEach(i=>{ let t=i.price*i.quantity; total+=t; html+=`<div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #e2e8f0;"><div><strong>${i.name}</strong><br>${i.price}ج.م × ${i.quantity}=<span style="color:#f97316">${t}ج.م</span></div><div><button onclick="updateQty(${i.id},1)" style="background:#eff6ff; border:none; padding:5px 10px; border-radius:8px;">+</button><button onclick="updateQty(${i.id},-1)" style="background:#eff6ff; border:none; padding:5px 10px; border-radius:8px;">-</button><button onclick="removeFromCart(${i.id})" style="background:#fef2f2; border:none; padding:5px 10px; border-radius:8px;"><i class="fas fa-trash"></i></button></div></div>`; }); div.innerHTML=html; document.getElementById('cartTotal').innerHTML=`<strong>الإجمالي: ${total} ج.م</strong>`; }
+    updateCounters(); renderCartModal();
+</script>
 </body>
 </html>
