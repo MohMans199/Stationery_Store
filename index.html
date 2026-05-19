@@ -5,19 +5,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>زيروكس المساحة | المنصة الرقمية المتكاملة</title>
     
-    <meta name="description" content="منصة زيروكس المساحة - خدمات طباعة ذكية، أدوات مكتبية، وخدمات إلكترونية متكاملة.">
-    
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <!-- Firebase SDKs (الإصدار 12.13.0 كما في كودك) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, collection, getDocs, addDoc, updateDoc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-analytics.js";
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyAN1QvZxQtNcnk5wuB3ukXVFjGuuQJemcU",
+            authDomain: "xerox-store-9cf64.firebaseapp.com",
+            projectId: "xerox-store-9cf64",
+            storageBucket: "xerox-store-9cf64.firebasestorage.app",
+            messagingSenderId: "715012735162",
+            appId: "1:715012735162:web:f4c89221cce0021b9e4283",
+            measurementId: "G-JGJY6VS0L8"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        window.auth = auth;
+        window.db = db;
+        window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
+        window.signInWithEmailAndPassword = signInWithEmailAndPassword;
+        window.signOut = signOut;
+        window.sendPasswordResetEmail = sendPasswordResetEmail;
+        window.onAuthStateChanged = onAuthStateChanged;
+        window.doc = doc;
+        window.setDoc = setDoc;
+        window.getDoc = getDoc;
+        window.collection = collection;
+        window.getDocs = getDocs;
+        window.addDoc = addDoc;
+        window.updateDoc = updateDoc;
+        window.deleteDoc = deleteDoc;
+        window.query = query;
+        window.where = where;
+    </script>
     
-    <!-- Libraries for AI services -->
-    <script src="https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.4.0/dist/background-removal.umd.js"></script>
+    <!-- مكتبات الخدمات الذكية -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js"></script>
 
@@ -31,7 +64,7 @@
             --text-gray: #64748b;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; outline: none; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
         body { background-color: var(--bg-light); color: var(--text-dark); overflow-x: hidden; }
         a { text-decoration: none; color: inherit; }
 
@@ -40,18 +73,15 @@
             position: fixed; top: 0; width: 100%; z-index: 1000;
             background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px);
             border-bottom: 1px solid rgba(255,255,255,0.1); padding: 15px 5%;
-            display: flex; justify-content: space-between; align-items: center; transition: 0.3s;
+            display: flex; justify-content: space-between; align-items: center;
         }
         .navbar .logo { font-size: 26px; font-weight: 900; color: white; display: flex; align-items: center; gap: 8px; }
-        .navbar .logo i { color: var(--secondary); font-size: 30px; }
-        
         .nav-links { display: flex; gap: 30px; align-items: center; }
         .nav-links a { color: #cbd5e1; font-weight: 500; font-size: 15px; transition: 0.3s; }
         .nav-links a:hover { color: var(--secondary); }
 
-        .nav-actions { display: flex; align-items: center; gap: 20px; }
+        .nav-actions { display: flex; gap: 20px; align-items: center; }
         .action-btn { position: relative; color: white; font-size: 24px; cursor: pointer; transition: 0.3s; }
-        .action-btn:hover { color: var(--secondary); transform: translateY(-2px); }
         .badge { position: absolute; top: -5px; right: -8px; background: var(--secondary); color: white; font-size: 11px; font-weight: 700; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
         
         .login-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 8px 20px; border-radius: 8px; font-weight: 600; display: flex; align-items: center; gap: 8px; cursor: pointer; transition: 0.3s; }
@@ -61,219 +91,146 @@
         .hero {
             padding: 180px 5% 100px; min-height: 90vh;
             background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
-            display: flex; align-items: center; justify-content: center; text-align: center; position: relative; overflow: hidden;
+            display: flex; align-items: center; justify-content: center; text-align: center;
         }
-        .hero::before { content: ''; position: absolute; width: 600px; height: 600px; background: radial-gradient(circle, rgba(59,130,246,0.15) 0%, transparent 70%); top: -200px; right: -200px; border-radius: 50%; }
-        
-        .hero-content { max-width: 800px; position: relative; z-index: 2; }
-        .tagline { display: inline-block; background: rgba(59,130,246,0.2); color: #60a5fa; padding: 6px 16px; border-radius: 30px; font-size: 14px; font-weight: 700; margin-bottom: 20px; border: 1px solid rgba(59,130,246,0.3); }
         .hero h1 { font-size: clamp(36px, 6vw, 64px); color: white; font-weight: 900; line-height: 1.2; margin-bottom: 25px; }
         .hero h1 span { background: linear-gradient(to right, #60a5fa, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .hero p { font-size: clamp(16px, 2vw, 20px); color: #94a3b8; margin-bottom: 40px; line-height: 1.7; }
-        
-        .hero-btns { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
-        .btn-primary { background: var(--secondary); color: white; padding: 16px 35px; border-radius: 12px; font-size: 16px; font-weight: 700; box-shadow: 0 10px 20px rgba(59,130,246,0.3); transition: 0.3s; display: flex; align-items: center; gap: 10px; border: none; cursor: pointer; }
-        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 15px 25px rgba(59,130,246,0.4); background: #2563eb; }
+        .hero p { font-size: clamp(16px, 2vw, 20px); color: #94a3b8; margin-bottom: 40px; }
+        .btn-primary { background: var(--secondary); color: white; padding: 16px 35px; border-radius: 12px; font-weight: 700; display: inline-flex; align-items: center; gap: 10px; border: none; cursor: pointer; transition: 0.3s; }
+        .btn-primary:hover { background: #2563eb; transform: translateY(-3px); }
 
         /* Sections */
         .section { padding: 100px 5%; }
         .section-header { text-align: center; margin-bottom: 60px; }
         .section-header h2 { font-size: 36px; color: var(--primary); font-weight: 900; margin-bottom: 15px; }
-        .section-header p { color: var(--text-gray); font-size: 18px; max-width: 600px; margin: 0 auto; }
-
         .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; }
-        
-        .service-card { background: white; border-radius: 20px; padding: 40px 30px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.05); transition: 0.4s; cursor: pointer; }
+
+        .service-card { background: white; border-radius: 20px; padding: 40px 30px; text-align: center; cursor: pointer; transition: 0.4s; box-shadow: 0 10px 30px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.05); }
         .service-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
         .service-icon { width: 80px; height: 80px; background: #eff6ff; border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px; color: var(--secondary); font-size: 40px; transition: 0.4s; }
-        .service-card:hover .service-icon { background: var(--secondary); color: white; transform: rotateY(180deg); }
-        .service-card h3 { font-size: 22px; font-weight: 800; margin-bottom: 15px; color: var(--primary); }
-        .service-card p { color: var(--text-gray); font-size: 15px; line-height: 1.6; }
+        .service-card:hover .service-icon { background: var(--secondary); color: white; }
 
-        /* AI Services Cards */
         .ai-card { background: linear-gradient(135deg, #1e293b, #0f172a); color: white; }
         .ai-card .service-icon { background: rgba(59,130,246,0.2); color: #60a5fa; }
-        .ai-card:hover .service-icon { background: var(--secondary); color: white; }
-        .ai-card p { color: #94a3b8; }
-        .ai-input { width: 100%; padding: 12px; margin: 15px 0; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: white; font-family: inherit; }
-        .ai-btn { background: var(--secondary); color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: 600; transition: 0.3s; width: 100%; }
-        .ai-btn:hover { background: #2563eb; transform: translateY(-2px); }
-        .ai-preview { margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+        .ai-input { width: 100%; padding: 12px; margin: 15px 0; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: white; }
+        .ai-btn { background: var(--secondary); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: 600; cursor: pointer; width: 100%; transition: 0.3s; }
+        .ai-btn:hover { background: #2563eb; }
+        .ai-preview { margin-top: 15px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
         .ai-preview img { max-width: 100px; border-radius: 12px; border: 2px solid rgba(255,255,255,0.2); }
+        .ai-preview a { color: #60a5fa; font-size: 12px; }
 
-        /* المنتجات */
-        .product-card { background: white; border-radius: 16px; overflow: hidden; border: 1px solid #e2e8f0; transition: 0.3s; display: flex; flex-direction: column; }
-        .product-card:hover { box-shadow: 0 15px 30px rgba(0,0,0,0.08); transform: translateY(-5px); }
+        /* منتجات */
+        .product-card { background: white; border-radius: 16px; overflow: hidden; border: 1px solid #e2e8f0; transition: 0.3s; }
+        .product-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.08); }
         .p-img-wrapper { padding: 20px; background: #f8fafc; text-align: center; height: 200px; display: flex; align-items: center; justify-content: center; }
         .p-img-wrapper img { max-width: 100%; max-height: 100%; object-fit: contain; }
-        .p-info { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; }
-        .p-cat { font-size: 12px; color: var(--secondary); font-weight: 700; text-transform: uppercase; margin-bottom: 8px; }
-        .p-title { font-size: 16px; font-weight: 800; color: var(--primary); margin-bottom: 10px; }
+        .p-info { padding: 20px; }
+        .p-title { font-size: 16px; font-weight: 800; margin-bottom: 10px; }
         .p-price { font-size: 20px; font-weight: 900; color: var(--primary); margin-bottom: 15px; }
         .p-actions { display: flex; gap: 10px; border-top: 1px solid #f1f5f9; padding-top: 15px; }
-        .btn-add, .btn-wish { background: #f1f5f9; color: var(--primary); border: none; padding: 10px; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; transition: 0.3s; flex: 1; display: flex; justify-content: center; align-items: center; gap: 8px; }
+        .btn-add, .btn-wish { background: #f1f5f9; border: none; padding: 10px; border-radius: 8px; font-weight: 700; cursor: pointer; flex: 1; display: flex; justify-content: center; align-items: center; gap: 8px; }
         .btn-add:hover { background: var(--secondary); color: white; }
         .btn-wish:hover { background: #ef4444; color: white; }
 
-        /* مودال الحساب */
+        /* مودالات */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15,23,42,0.6); backdrop-filter: blur(8px); z-index: 2000; align-items: center; justify-content: center; }
         .modal-content { background: white; padding: 35px; border-radius: 24px; width: 90%; max-width: 450px; position: relative; text-align: right; }
-        .modal-content h3 { font-size: 24px; font-weight: 800; margin-bottom: 20px; color: var(--primary); }
+        .modal-content h3 { font-size: 24px; font-weight: 800; margin-bottom: 20px; }
         .close-btn { position: absolute; left: 20px; top: 20px; font-size: 24px; cursor: pointer; color: var(--text-gray); }
-        .auth-form input { width: 100%; padding: 12px 15px; border: 1px solid #cbd5e1; border-radius: 10px; margin-bottom: 12px; font-size: 15px; }
-        .auth-form button { width: 100%; padding: 14px; background: var(--secondary); color: white; border: none; border-radius: 10px; font-weight: 700; font-size: 16px; cursor: pointer; transition: 0.3s; }
-        .auth-form button:hover { background: #2563eb; }
-        .auth-toggle-text { margin-top: 15px; text-align: center; font-size: 14px; color: var(--text-gray); }
+        .auth-form input { width: 100%; padding: 12px 15px; border: 1px solid #cbd5e1; border-radius: 10px; margin-bottom: 12px; }
+        .auth-form button { width: 100%; padding: 14px; background: var(--secondary); color: white; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; }
+        .auth-toggle-text { margin-top: 15px; text-align: center; font-size: 14px; }
         .auth-toggle-text span { color: var(--secondary); cursor: pointer; font-weight: 700; }
 
         /* السلة الجانبية */
         .cart-drawer-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15,23,42,0.6); backdrop-filter: blur(4px); z-index: 2000; opacity: 0; visibility: hidden; transition: 0.3s; }
         .cart-drawer-overlay.active { opacity: 1; visibility: visible; }
-        .cart-drawer { position: fixed; top: 0; left: -400px; width: 100%; max-width: 400px; height: 100vh; background: white; z-index: 2001; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; }
+        .cart-drawer { position: fixed; top: 0; left: -400px; width: 100%; max-width: 400px; height: 100vh; background: white; z-index: 2001; transition: 0.4s; display: flex; flex-direction: column; }
         .cart-drawer.active { left: 0; }
         .cart-header { padding: 25px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; }
-        .cart-header h3 { font-size: 20px; font-weight: 800; color: var(--primary); }
-        .close-drawer { background: #f1f5f9; border: none; width: 35px; height: 35px; border-radius: 50%; font-size: 20px; cursor: pointer; }
         .cart-body { padding: 25px; flex-grow: 1; overflow-y: auto; }
         .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid #f1f5f9; }
-        .cart-item-info h4 { font-size: 14px; font-weight: 700; margin-bottom: 5px; }
-        .cart-item-price { color: var(--secondary); font-weight: 800; }
-        .qty-controls { display: flex; align-items: center; gap: 10px; background: #f8fafc; padding: 5px 10px; border-radius: 8px; }
-        .qty-btn { background: transparent; border: none; width: 25px; cursor: pointer; font-weight: bold; }
         .cart-footer { padding: 25px; border-top: 1px solid #f1f5f9; background: #f8fafc; }
-        .cart-total-row { display: flex; justify-content: space-between; margin-bottom: 20px; font-size: 18px; font-weight: 900; }
-        .checkout-form input { width: 100%; padding: 12px 15px; border: 1px solid #cbd5e1; border-radius: 8px; margin-bottom: 12px; }
-        .btn-checkout { background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; width: 100%; padding: 16px; border-radius: 12px; font-size: 16px; font-weight: 800; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; }
+        .btn-checkout { background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; width: 100%; padding: 16px; border-radius: 12px; font-weight: 800; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; }
         .payment-methods { background: #f1f5f9; padding: 15px; border-radius: 12px; margin-bottom: 15px; text-align: center; }
-        .payment-methods img { width: 60px; background: white; padding: 5px; border-radius: 10px; margin-top: 5px; }
+        .payment-methods img { width: 80px; background: white; padding: 5px; border-radius: 10px; margin-top: 5px; }
 
         .footer { background: var(--primary); color: #94a3b8; padding: 60px 5% 30px; text-align: center; }
-
-        @media (max-width: 768px) {
-            .nav-links { display: none; }
-            .hero { padding-top: 140px; }
-            .grid-3 { grid-template-columns: 1fr; }
-        }
+        @media (max-width: 768px) { .nav-links { display: none; } .hero { padding-top: 140px; } .grid-3 { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
 <nav class="navbar">
     <a href="#" class="logo"><i class="las la-layer-group"></i> زيروكس المساحة</a>
-    
     <div class="nav-links">
         <a href="#" onclick="smoothScroll('home')">الرئيسية</a>
-        <a href="#" onclick="smoothScroll('services')">خدماتنا</a>
         <a href="#" onclick="smoothScroll('store')">المتجر</a>
         <a href="#" onclick="smoothScroll('contact')">اتصل بنا</a>
     </div>
-
     <div class="nav-actions">
-        <button class="login-btn" id="userMenuBtn" onclick="openAuthModal()">
-            <i class="las la-user-circle"></i> <span id="userMenuText">حسابي / تسجيل</span>
-        </button>
-        
-        <div class="action-btn" onclick="toggleCart()">
-            <i class="las la-shopping-bag"></i>
-            <span class="badge" id="cartCountNav">0</span>
-        </div>
+        <button class="login-btn" id="userMenuBtn" onclick="openAuthModal()"><i class="las la-user-circle"></i> <span id="userMenuText">حسابي / تسجيل</span></button>
+        <div class="action-btn" onclick="toggleCart()"><i class="las la-shopping-bag"></i><span class="badge" id="cartCountNav">0</span></div>
     </div>
 </nav>
 
 <section class="hero" id="home">
-    <div class="hero-content" data-aos="fade-up">
-        <span class="tagline">المنصة الرقمية الأولى في الجيزة 🚀</span>
+    <div>
         <h1>مستقبلك الرقمي والمكتبي <span>يبدأ من هنا.</span></h1>
-        <p>ليس مجرد مركز طباعة، بل منصة متكاملة توفر لك أحدث ماكينات التصوير، الأدوات المكتبية، وخدمات الدعم الفني وتجهيز المستندات أونلاين.</p>
-        <div class="hero-btns">
-            <button class="btn-primary" onclick="smoothScroll('store')"><i class="las la-shopping-cart"></i> تصفح المتجر</button>
-        </div>
+        <p>منصة متكاملة للطباعة والأدوات المكتبية والخدمات الإلكترونية.</p>
+        <button class="btn-primary" onclick="smoothScroll('store')"><i class="las la-shopping-cart"></i> تصفح المتجر</button>
     </div>
 </section>
 
 <!-- خدمات الذكاء الاصطناعي -->
 <section class="section" style="background: linear-gradient(135deg, #0f172a, #1e1b4b);">
-    <div class="section-header" data-aos="fade-up">
-        <h2 style="color: white;">🤖 خدمات الذكاء الاصطناعي</h2>
-        <p style="color: #94a3b8;">خدمات تفاعلية تعمل مباشرة في متصفحك بخصوصية تامة</p>
-    </div>
+    <div class="section-header"><h2 style="color:white;">🤖 خدمات ذكية سريعة</h2></div>
     <div class="grid-3">
-        <!-- إزالة الخلفية -->
-        <div class="service-card ai-card" data-aos="fade-up">
+        <div class="service-card ai-card">
             <div class="service-icon"><i class="las la-magic"></i></div>
             <h3>إزالة خلفية الصور</h3>
-            <p>ارفع صورتك واحصل على خلفية شفافة بدقة عالية</p>
             <input type="file" id="bgRemoveInput" class="ai-input" accept="image/*">
             <div id="bgRemovePreview" class="ai-preview"></div>
-            <button class="ai-btn" onclick="removeBackground()">إزالة الخلفية</button>
+            <button class="ai-btn" onclick="removeBackgroundFast()">إزالة الخلفية</button>
         </div>
-        
-        <!-- تحسين المستندات (كاميرا سكانر) -->
-        <div class="service-card ai-card" data-aos="fade-up" data-aos-delay="100">
+        <div class="service-card ai-card">
             <div class="service-icon"><i class="las la-camera"></i></div>
-            <h3>كاميرا سكانر ذكية</h3>
-            <p>تحسين صور المستندات وإزالة الظلال والضوضاء</p>
+            <h3>تحسين المستندات (كاميرا سكانر)</h3>
             <input type="file" id="scanInput" class="ai-input" accept="image/*">
             <div id="scanPreview" class="ai-preview"></div>
-            <button class="ai-btn" onclick="enhanceDocument()">تحسين الصورة</button>
+            <button class="ai-btn" onclick="enhanceDocumentFast()">تحسين الصورة</button>
         </div>
-        
-        <!-- تحويل الملفات -->
-        <div class="service-card ai-card" data-aos="fade-up" data-aos-delay="200">
+        <div class="service-card ai-card">
             <div class="service-icon"><i class="las la-file-alt"></i></div>
-            <h3>تحويل الملفات</h3>
-            <p>تحويل الصور إلى PDF والعكس بجودة عالية</p>
-            <select id="convertType" class="ai-input">
-                <option value="img2pdf">صور إلى PDF</option>
-            </select>
-            <input type="file" id="convertFile" class="ai-input" accept="image/*,.pdf">
-            <div id="convertResult" class="ai-preview" style="color: #94a3b8; font-size: 14px;"></div>
-            <button class="ai-btn" onclick="convertFile()">تحويل</button>
+            <h3>تحويل الصور إلى PDF</h3>
+            <input type="file" id="convertFile" class="ai-input" accept="image/*">
+            <div id="convertResult" class="ai-preview"></div>
+            <button class="ai-btn" onclick="convertImageToPdf()">تحويل</button>
         </div>
     </div>
 </section>
 
-<!-- الأقسام الرئيسية -->
-<section class="section" id="services">
-    <div class="section-header" data-aos="fade-up">
-        <h2>أقسام المنصة الاحترافية</h2>
-    </div>
+<!-- أقسام المنصة -->
+<section class="section">
+    <div class="section-header"><h2>أقسام المنصة</h2></div>
     <div class="grid-3">
-        <div class="service-card" onclick="window.location.href='printing.html'">
-            <div class="service-icon"><i class="las la-print"></i></div>
-            <h3>الطباعة الرقمية والأوتوكاد</h3>
-            <p>طباعة ليزر فائقة الدقة، طباعة مخططات هندسية، وضبط مقاسات الصور الشخصية للمؤسسات.</p>
-        </div>
-        <div class="service-card" onclick="window.location.href='services.html'">
-            <div class="service-icon"><i class="las la-book"></i></div>
-            <h3>التغليف والأرشفة الإلكترونية</h3>
-            <p>سحب ملفات PDF عالية الجودة، تغليف حراري متين، وتكعيب سلك للرسائل العلمية.</p>
-        </div>
-        <div class="service-card" onclick="window.location.href='stationery.html'">
-            <div class="service-icon"><i class="las la-pen-nib"></i></div>
-            <h3>توريد الأدوات المكتبية</h3>
-            <p>تجهيز كامل للشركات والمدارس بأجود أنواع الورق، الأحبار، ومستلزمات التنظيم.</p>
-        </div>
+        <div class="service-card" onclick="window.location.href='printing.html'"><div class="service-icon"><i class="las la-print"></i></div><h3>طباعة وتصوير</h3><p>ليزر عالي الدقة ومخططات هندسية</p></div>
+        <div class="service-card" onclick="window.location.href='services.html'"><div class="service-icon"><i class="las la-book"></i></div><h3>تغليف وأرشفة</h3><p>سحب PDF وتغليف حراري</p></div>
+        <div class="service-card" onclick="window.location.href='stationery.html'"><div class="service-icon"><i class="las la-pen-nib"></i></div><h3>أدوات مكتبية</h3><p>أحبار، ورق، ماكينات</p></div>
     </div>
 </section>
 
 <!-- المتجر -->
 <section class="section" id="store" style="background:#f8fafc;">
-    <div class="section-header" data-aos="fade-up">
-        <h2>المتجر الإلكتروني</h2>
-        <p>أحدث ماكينات التصوير، قطع الغيار، والأدوات المكتبية بأسعار تنافسية.</p>
-    </div>
+    <div class="section-header"><h2>المتجر الإلكتروني</h2></div>
     <div class="grid-3" id="productsContainer"></div>
 </section>
 
-<!-- الخريطة والتواصل -->
-<section class="section" id="contact" style="background:#fff;">
-    <div class="section-header">
-        <h2>📍 موقعنا في فرع المساحة</h2>
-    </div>
-    <div style="width: 100%; max-width: 1000px; margin: 0 auto;">
-        <iframe src="https://maps.google.com/maps?q=30.037137,31.215194&hl=ar&z=17&output=embed" width="100%" height="380" style="border:0; border-radius: 20px;" allowfullscreen="" loading="lazy"></iframe>
-        <p style="margin-top: 20px; color:#475569; font-weight: 600; text-align: center;">أمام محطة مترو الدقي، بجوار كافيه سفير والحاج عرفة – يمين شارع المساحة</p>
+<!-- الخريطة -->
+<section class="section" id="contact">
+    <div class="section-header"><h2>📍 موقعنا</h2></div>
+    <div style="max-width:1000px; margin:0 auto;">
+        <iframe src="https://maps.google.com/maps?q=30.037137,31.215194&hl=ar&z=17&output=embed" width="100%" height="380" style="border:0; border-radius:20px;"></iframe>
     </div>
 </section>
 
@@ -281,13 +238,13 @@
 <div class="modal" id="authModal">
     <div class="modal-content">
         <span class="close-btn" onclick="closeAuthModal()"><i class="las la-times"></i></span>
-        <h3 id="authTitle">تسجيل الدخول للمنصة</h3>
+        <h3 id="authTitle">تسجيل الدخول</h3>
         <form class="auth-form" id="authForm" onsubmit="handleAuth(event)">
             <input type="email" id="authEmail" placeholder="البريد الإلكتروني" required>
             <input type="password" id="authPassword" placeholder="كلمة المرور" required>
             <button type="submit" id="authBtn">دخول</button>
         </form>
-        <p class="auth-toggle-text" id="authToggleText">ليس لديك حساب؟ <span onclick="toggleAuthMode()">إنشاء حساب جديد</span></p>
+        <p class="auth-toggle-text" id="authToggleText">ليس لديك حساب؟ <span onclick="toggleAuthMode()">إنشاء حساب</span></p>
         <p class="auth-toggle-text"><span onclick="forgetPassword()">نسيت كلمة المرور؟</span></p>
     </div>
 </div>
@@ -295,69 +252,43 @@
 <!-- السلة الجانبية -->
 <div class="cart-drawer-overlay" id="cartOverlay" onclick="toggleCart()"></div>
 <div class="cart-drawer" id="cartDrawer">
-    <div class="cart-header">
-        <h3><i class="las la-shopping-bag"></i> سلة المشتريات</h3>
-        <button class="close-drawer" onclick="toggleCart()"><i class="las la-times"></i></button>
-    </div>
+    <div class="cart-header"><h3><i class="las la-shopping-bag"></i> سلتي</h3><button class="close-drawer" onclick="toggleCart()"><i class="las la-times"></i></button></div>
     <div class="cart-body" id="cartItemsList"></div>
     <div class="cart-footer">
-        <div class="payment-methods">
-            <p><i class="las la-mobile-alt"></i> فودافون كاش: <strong>01008038818</strong></p>
-            <img id="vodafoneQR" alt="QR Code" style="width: 80px;">
-            <p style="font-size: 12px; margin-top: 8px;"><i class="las la-university"></i> تحويل بنكي: حساب بنك مصر 123456789</p>
-        </div>
-        <div class="cart-total-row"><span>الإجمالي:</span><span id="cartTotal">0 ج.م</span></div>
+        <div class="payment-methods"><p>📱 فودافون كاش: <strong>01008038818</strong></p><img id="vodafoneQR" alt="QR" style="width:70px;"></div>
         <div class="checkout-form">
-            <input type="text" id="clientName" placeholder="الاسم بالكامل" required>
-            <input type="tel" id="clientPhone" placeholder="رقم التليفون" required>
-            <input type="text" id="clientAddress" placeholder="عنوان التوصيل أو الفرع" required>
+            <input type="text" id="clientName" placeholder="الاسم">
+            <input type="tel" id="clientPhone" placeholder="رقم التليفون">
+            <input type="text" id="clientAddress" placeholder="العنوان">
         </div>
-        <button class="btn-checkout" onclick="checkoutCart()"><i class="lab la-whatsapp"></i> تأكيد الطلب عبر الواتساب</button>
+        <button class="btn-checkout" onclick="checkoutCart()"><i class="lab la-whatsapp"></i> تأكيد الطلب</button>
     </div>
 </div>
 
 <footer class="footer">
-    <h2 style="color:white; margin-bottom:15px;">مركز منصور المتكامل</h2>
-    <p>📍 الجيزة - ميدان المساحة (الدقي) بجوار الحاج عرفة</p>
+    <p>📍 الجيزة - ميدان المساحة (الدقي)</p>
     <p>📞 01101339148 | 📧 xerox_elmesaha@yahoo.com</p>
-    <p style="margin-top: 20px; font-size: 13px;">© 2026 مركز منصور المتكامل – جميع الحقوق محفوظة</p>
 </footer>
 
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
     AOS.init({ duration: 800, once: true });
     
-    // ============ FIREBASE CONFIG ============
-    const firebaseConfig = {
-        apiKey: "AIzaSyAN1QvZxQtNcnk5wuB3ukXVFjGuuQJemcU",
-        authDomain: "xerox-store-9cf64.firebaseapp.com",
-        projectId: "xerox-store-9cf64",
-        storageBucket: "xerox-store-9cf64.firebasestorage.app",
-        messagingSenderId: "715012735162",
-        appId: "1:715012735162:web:f4c89221cce0021b9e4283"
-    };
-    
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-    
-    let isSignUpMode = false;
+    // ============ FIREBASE AUTH FUNCTIONS ============
     let currentUser = null;
     let cart = [];
     let wishlist = [];
     
-    // ============ AUTH FUNCTIONS ============
-    auth.onAuthStateChanged(async (user) => {
+    window.onAuthStateChanged(auth, async (user) => {
         currentUser = user;
-        const btnText = document.getElementById('userMenuText');
         if (user) {
-            const userDoc = await db.collection('users').doc(user.uid).get();
+            const userDoc = await getDoc(doc(db, 'users', user.uid));
             const isAdmin = userDoc.exists && userDoc.data().isAdmin;
-            btnText.innerHTML = isAdmin ? '<i class="las la-cog"></i> لوحة الإدارة' : user.email.split('@')[0];
+            document.getElementById('userMenuText').innerHTML = isAdmin ? '👑 أدمن' : user.email.split('@')[0];
             await loadUserCart(user.uid);
             await loadUserWishlist(user.uid);
         } else {
-            btnText.innerHTML = '<i class="las la-user-circle"></i> حسابي / تسجيل';
+            document.getElementById('userMenuText').innerHTML = 'حسابي';
             cart = [];
             wishlist = [];
             updateCartUI();
@@ -365,61 +296,54 @@
     });
     
     async function loadUserCart(userId) {
-        const cartDoc = await db.collection('carts').doc(userId).get();
+        const cartDoc = await getDoc(doc(db, 'carts', userId));
         cart = cartDoc.exists ? cartDoc.data().items || [] : [];
         updateCartUI();
     }
     
-    async function saveUserCart() {
-        if (currentUser) {
-            await db.collection('carts').doc(currentUser.uid).set({ items: cart });
-        }
+    async function saveCart() {
+        if (currentUser) await setDoc(doc(db, 'carts', currentUser.uid), { items: cart });
         updateCartUI();
     }
     
     async function loadUserWishlist(userId) {
-        const wishDoc = await db.collection('wishlists').doc(userId).get();
+        const wishDoc = await getDoc(doc(db, 'wishlists', userId));
         wishlist = wishDoc.exists ? wishDoc.data().items || [] : [];
     }
     
-    async function saveUserWishlist() {
-        if (currentUser) {
-            await db.collection('wishlists').doc(currentUser.uid).set({ items: wishlist });
-        }
+    async function saveWishlist() {
+        if (currentUser) await setDoc(doc(db, 'wishlists', currentUser.uid), { items: wishlist });
     }
     
     function handleAuth(e) {
         e.preventDefault();
         const email = document.getElementById('authEmail').value.trim();
         const password = document.getElementById('authPassword').value;
+        const isSignUp = document.getElementById('authBtn').innerText === 'تسجيل';
         
-        if (isSignUpMode) {
-            auth.createUserWithEmailAndPassword(email, password)
-                .then(cred => db.collection('users').doc(cred.user.uid).set({
-                    email: email,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    isAdmin: false
-                }))
-                .then(() => { alert('تم إنشاء الحساب بنجاح!'); closeAuthModal(); })
-                .catch(err => alert("خطأ: " + err.message));
+        if (isSignUp) {
+            createUserWithEmailAndPassword(auth, email, password)
+                .then(cred => setDoc(doc(db, 'users', cred.user.uid), { email, createdAt: new Date().toISOString(), isAdmin: false }))
+                .then(() => { alert('✅ تم إنشاء الحساب بنجاح!'); closeAuthModal(); })
+                .catch(err => alert('❌ خطأ: ' + err.message));
         } else {
-            auth.signInWithEmailAndPassword(email, password)
-                .then(() => { alert('تم تسجيل الدخول بنجاح!'); closeAuthModal(); })
-                .catch(err => alert("البريد أو كلمة المرور غير صحيحة"));
+            signInWithEmailAndPassword(auth, email, password)
+                .then(() => { alert('✅ تم تسجيل الدخول بنجاح!'); closeAuthModal(); })
+                .catch(err => alert('❌ البريد أو كلمة المرور غير صحيحة'));
         }
     }
     
     function forgetPassword() {
         const email = document.getElementById('authEmail').value.trim();
         if (!email) { alert('أدخل بريدك الإلكتروني أولاً'); return; }
-        auth.sendPasswordResetEmail(email)
-            .then(() => alert('تم إرسال رابط إعادة التعيين إلى بريدك الإلكتروني'))
-            .catch(err => alert(err.message));
+        sendPasswordResetEmail(auth, email)
+            .then(() => alert('📧 تم إرسال رابط إعادة التعيين إلى بريدك الإلكتروني'))
+            .catch(err => alert('❌ خطأ: ' + err.message));
     }
     
     function openAuthModal() {
         if (currentUser) {
-            if (confirm('تسجيل الخروج؟')) auth.signOut();
+            if (confirm('هل تريد تسجيل الخروج؟')) signOut(auth);
         } else {
             document.getElementById('authModal').style.display = 'flex';
         }
@@ -427,35 +351,36 @@
     function closeAuthModal() { document.getElementById('authModal').style.display = 'none'; }
     
     function toggleAuthMode() {
-        isSignUpMode = !isSignUpMode;
-        document.getElementById('authTitle').innerText = isSignUpMode ? "إنشاء حساب جديد" : "تسجيل الدخول";
-        document.getElementById('authBtn').innerText = isSignUpMode ? "تسجيل" : "دخول";
-        document.getElementById('authToggleText').innerHTML = isSignUpMode ? "لديك حساب؟ <span onclick='toggleAuthMode()'>تسجيل الدخول</span>" : "ليس لديك حساب؟ <span onclick='toggleAuthMode()'>إنشاء حساب</span>";
+        const btn = document.getElementById('authBtn');
+        const isSignUp = btn.innerText === 'تسجيل';
+        btn.innerText = isSignUp ? 'دخول' : 'تسجيل';
+        document.getElementById('authTitle').innerText = isSignUp ? 'تسجيل الدخول' : 'إنشاء حساب جديد';
+        const toggle = document.getElementById('authToggleText');
+        toggle.innerHTML = isSignUp ? 'ليس لديك حساب؟ <span onclick="toggleAuthMode()">إنشاء حساب</span>' : 'لديك حساب؟ <span onclick="toggleAuthMode()">تسجيل الدخول</span>';
     }
     
-    // ============ PRODUCTS ============
-    const productsDatabase = [
-        { id: 1, name: "ماكينة زيروكس 7855", cat: "ماكينات ليزر", price: 24500, img: "https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?auto=format&fit=crop&w=300&q=80" },
-        { id: 2, name: "ماكينة ريكو MP 5055", cat: "ماكينات ألوان", price: 22500, img: "https://images.unsplash.com/photo-1590493060596-f09c25e83ec6?auto=format&fit=crop&w=300&q=80" },
-        { id: 3, name: "رزمة ورق A4 Double A", cat: "أدوات مكتبية", price: 280, img: "https://images.unsplash.com/photo-1586075010923-2dd4570fb338?auto=format&fit=crop&w=300&q=80" },
-        { id: 4, name: "آلة حاسبة علمية كاسيو", cat: "أدوات مكتبية", price: 450, img: "https://images.unsplash.com/photo-1586075010923-2dd4570fb338?auto=format&fit=crop&w=300&q=80" }
+    // ============ المنتجات ============
+    const products = [
+        { id: 1, name: "ماكينة زيروكس 7855", price: 24500, img: "https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?auto=format&fit=crop&w=300&q=80" },
+        { id: 2, name: "ماكينة ريكو MP 5055", price: 22500, img: "https://images.unsplash.com/photo-1590493060596-f09c25e83ec6?auto=format&fit=crop&w=300&q=80" },
+        { id: 3, name: "رزمة ورق A4 Double A", price: 280, img: "https://images.unsplash.com/photo-1586075010923-2dd4570fb338?auto=format&fit=crop&w=300&q=80" },
+        { id: 4, name: "آلة حاسبة علمية كاسيو", price: 450, img: "https://images.unsplash.com/photo-1586075010923-2dd4570fb338?auto=format&fit=crop&w=300&q=80" }
     ];
     
     function renderProducts() {
         const container = document.getElementById('productsContainer');
         if (!container) return;
         container.innerHTML = '';
-        productsDatabase.forEach(p => {
+        products.forEach(p => {
             const inWishlist = wishlist.some(w => w.id == p.id);
             container.innerHTML += `
-                <div class="product-card" data-aos="fade-up">
+                <div class="product-card">
                     <div class="p-img-wrapper"><img src="${p.img}" alt="${p.name}"></div>
                     <div class="p-info">
-                        <div class="p-cat">${p.cat}</div>
                         <div class="p-title">${p.name}</div>
                         <div class="p-price">${p.price} ج.م</div>
                         <div class="p-actions">
-                            <button class="btn-add" onclick="addToCart(${p.id})"><i class="las la-plus"></i> إضافة للسلة</button>
+                            <button class="btn-add" onclick="addToCart(${p.id})"><i class="las la-cart-plus"></i> أضف للسلة</button>
                             <button class="btn-wish" onclick="toggleWishlist(${p.id})" style="color:${inWishlist ? '#ef4444' : '#64748b'}"><i class="las la-heart"></i></button>
                         </div>
                     </div>
@@ -464,30 +389,40 @@
         });
     }
     
-    // ============ CART FUNCTIONS ============
     function addToCart(id) {
         if (!currentUser) { alert('الرجاء تسجيل الدخول أولاً'); openAuthModal(); return; }
-        const product = productsDatabase.find(p => p.id == id);
+        const product = products.find(p => p.id == id);
         const existing = cart.find(c => c.id == id);
-        if (existing) existing.quantity++;
+        if (existing) existing.quantity = (existing.quantity || 1) + 1;
         else cart.push({ ...product, quantity: 1 });
-        saveUserCart();
+        saveCart();
+        renderCartSidebar();
         toggleCart();
+    }
+    
+    function toggleWishlist(id) {
+        if (!currentUser) { alert('الرجاء تسجيل الدخول أولاً'); openAuthModal(); return; }
+        const product = products.find(p => p.id == id);
+        const exists = wishlist.some(w => w.id == id);
+        if (exists) wishlist = wishlist.filter(w => w.id != id);
+        else wishlist.push(product);
+        saveWishlist();
+        renderProducts();
     }
     
     function updateCartQty(id, delta) {
         const item = cart.find(c => c.id == id);
         if (item) {
-            item.quantity += delta;
+            item.quantity = (item.quantity || 1) + delta;
             if (item.quantity <= 0) cart = cart.filter(c => c.id != id);
-            saveUserCart();
+            saveCart();
             renderCartSidebar();
         }
     }
     
     function removeFromCart(id) {
         cart = cart.filter(c => c.id != id);
-        saveUserCart();
+        saveCart();
         renderCartSidebar();
     }
     
@@ -495,53 +430,34 @@
         const container = document.getElementById('cartItemsList');
         if (!container) return;
         if (cart.length === 0) {
-            container.innerHTML = '<div style="text-align:center; padding:40px; color:#94a3b8;">سلتك فارغة ☹️</div>';
-            document.getElementById('cartTotal').innerHTML = '0 ج.م';
+            container.innerHTML = '<div style="text-align:center; padding:40px;">🛒 السلة فارغة</div>';
+            document.getElementById('cartTotal').innerHTML = '';
             return;
         }
         let html = '', total = 0;
         cart.forEach(item => {
-            const qty = item.quantity || 1;
-            const itemTotal = item.price * qty;
-            total += itemTotal;
-            html += `
-                <div class="cart-item">
-                    <div class="cart-item-info">
-                        <h4>${item.name}</h4>
-                        <div class="cart-item-price">${item.price} ج.م</div>
-                        <div class="qty-controls">
-                            <button class="qty-btn" onclick="updateCartQty(${item.id}, -1)">-</button>
-                            <span>${qty}</span>
-                            <button class="qty-btn" onclick="updateCartQty(${item.id}, 1)">+</button>
+            const q = item.quantity || 1;
+            total += item.price * q;
+            html += `<div class="cart-item">
+                        <div><b>${item.name}</b><br>${item.price} ج.م × ${q} = ${item.price*q} ج.م</div>
+                        <div>
+                            <button onclick="updateCartQty(${item.id}, -1)">-</button>
+                            <span style="margin:0 8px;">${q}</span>
+                            <button onclick="updateCartQty(${item.id}, 1)">+</button>
+                            <button onclick="removeFromCart(${item.id})" style="color:red; margin-right:10px;">🗑️</button>
                         </div>
-                    </div>
-                    <button onclick="removeFromCart(${item.id})" style="background:none; border:none; color:#ef4444; cursor:pointer;"><i class="las la-trash"></i></button>
-                </div>
-            `;
+                    </div>`;
         });
         container.innerHTML = html;
-        document.getElementById('cartTotal').innerHTML = total + ' ج.م';
-        document.getElementById('cartCountNav').innerHTML = cart.reduce((a, b) => a + (b.quantity || 1), 0);
+        document.getElementById('cartTotal').innerHTML = `💰 الإجمالي: ${total} ج.م`;
+        document.getElementById('cartCountNav').innerHTML = cart.reduce((a,b)=>a+(b.quantity||1),0);
     }
     
     function updateCartUI() {
         renderCartSidebar();
-        const totalQty = cart.reduce((a, b) => a + (b.quantity || 1), 0);
-        document.getElementById('cartCountNav').innerHTML = totalQty;
+        document.getElementById('cartCountNav').innerHTML = cart.reduce((a,b)=>a+(b.quantity||1),0);
     }
     
-    // ============ WISHLIST FUNCTIONS ============
-    function toggleWishlist(id) {
-        if (!currentUser) { alert('الرجاء تسجيل الدخول أولاً'); openAuthModal(); return; }
-        const product = productsDatabase.find(p => p.id == id);
-        const exists = wishlist.some(w => w.id == id);
-        if (exists) wishlist = wishlist.filter(w => w.id != id);
-        else wishlist.push(product);
-        saveUserWishlist();
-        renderProducts();
-    }
-    
-    // ============ CART UI ============
     function toggleCart() {
         document.getElementById('cartDrawer').classList.toggle('active');
         document.getElementById('cartOverlay').classList.toggle('active');
@@ -553,35 +469,54 @@
         const name = document.getElementById('clientName').value.trim();
         const phone = document.getElementById('clientPhone').value.trim();
         const address = document.getElementById('clientAddress').value.trim();
-        if (!name || !phone) { alert('الرجاء إدخال الاسم ورقم التليفون'); return; }
+        if (!name || !phone) { alert('الرجاء إدخال الاسم ورقم الهاتف'); return; }
         
-        let msg = `🛍️ *طلب جديد من زيروكس المساحة*\n\n👤 الاسم: ${name}\n📞 التليفون: ${phone}\n📍 العنوان: ${address || 'استلام من الفرع'}\n\n📦 *المنتجات:*\n`;
-        cart.forEach(c => { msg += `▪️ ${c.name} (الكمية: ${c.quantity || 1})\n`; });
-        msg += `\n💰 *الإجمالي:* ${cart.reduce((a, b) => a + (b.price * (b.quantity || 1)), 0)} ج.م\n\nطرق الدفع:\n📱 فودافون كاش: 01008038818\n🏦 تحويل بنكي: بنك مصر 123456789`;
-        
+        let msg = `🛍️ *طلب جديد من زيروكس المساحة*\n\n👤 الاسم: ${name}\n📞 الهاتف: ${phone}\n📍 العنوان: ${address || 'استلام من الفرع'}\n\n📦 *المنتجات:*\n`;
+        cart.forEach(c => msg += `▪️ ${c.name} (الكمية: ${c.quantity||1})\n`);
+        msg += `\n💰 *الإجمالي:* ${cart.reduce((a,b)=>a+(b.price*(b.quantity||1)),0)} ج.م\n\nطرق الدفع:\n📱 فودافون كاش: 01008038818\n🏦 تحويل بنكي: بنك مصر 123456789`;
         window.open(`https://wa.me/201101339148?text=${encodeURIComponent(msg)}`, '_blank');
     }
     
-    // ============ AI SERVICES ============
-    async function removeBackground() {
+    // ============ خدمات الذكاء الاصطناعي ============
+    async function removeBackgroundFast() {
         const file = document.getElementById('bgRemoveInput').files[0];
-        if (!file) { alert("اختر صورة أولاً"); return; }
-        alert("جاري إزالة الخلفية...");
+        if (!file) { alert('اختر صورة أولاً'); return; }
+        document.getElementById('bgRemovePreview').innerHTML = '<p>⏳ جاري المعالجة...</p>';
+        
         const img = new Image();
         img.src = URL.createObjectURL(file);
         img.onload = async () => {
             try {
-                const blob = await window.removeBackground(img);
-                const url = URL.createObjectURL(blob);
-                document.getElementById('bgRemovePreview').innerHTML = `<img src="${url}"><a href="${url}" download="no-bg.png" style="color:#60a5fa;">تحميل</a>`;
-            } catch(e) { alert("حدث خطأ: " + e.message); }
+                const canvas = document.createElement('canvas');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0);
+                
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const data = imageData.data;
+                for (let i = 0; i < data.length; i += 4) {
+                    const r = data[i];
+                    const g = data[i+1];
+                    const b = data[i+2];
+                    if (r > 200 && g > 200 && b > 200) {
+                        data[i+3] = 0; // شفاف
+                    }
+                }
+                ctx.putImageData(imageData, 0, 0);
+                const url = canvas.toDataURL();
+                document.getElementById('bgRemovePreview').innerHTML = `<img src="${url}"><a href="${url}" download="no-bg.png">📥 تحميل</a>`;
+            } catch(e) {
+                document.getElementById('bgRemovePreview').innerHTML = '<p style="color:red;">❌ فشل إزالة الخلفية</p>';
+            }
         };
     }
     
-    async function enhanceDocument() {
+    function enhanceDocumentFast() {
         const file = document.getElementById('scanInput').files[0];
-        if (!file) { alert("اختر صورة أولاً"); return; }
-        alert("جاري تحسين الصورة...");
+        if (!file) { alert('اختر صورة أولاً'); return; }
+        document.getElementById('scanPreview').innerHTML = '<p>⏳ جاري التحسين...</p>';
+        
         const img = new Image();
         img.src = URL.createObjectURL(file);
         img.onload = () => {
@@ -594,7 +529,7 @@
             const data = imageData.data;
             for (let i = 0; i < data.length; i += 4) {
                 const brightness = (data[i] + data[i+1] + data[i+2]) / 3;
-                if (brightness < 100) {
+                if (brightness < 150) {
                     data[i] = Math.min(255, data[i] * 1.3);
                     data[i+1] = Math.min(255, data[i+1] * 1.3);
                     data[i+2] = Math.min(255, data[i+2] * 1.3);
@@ -602,48 +537,41 @@
             }
             ctx.putImageData(imageData, 0, 0);
             const url = canvas.toDataURL();
-            document.getElementById('scanPreview').innerHTML = `<img src="${url}"><a href="${url}" download="enhanced.jpg" style="color:#60a5fa;">تحميل</a>`;
+            document.getElementById('scanPreview').innerHTML = `<img src="${url}"><a href="${url}" download="enhanced.jpg">📥 تحميل</a>`;
         };
     }
     
-    async function convertFile() {
+    async function convertImageToPdf() {
         const file = document.getElementById('convertFile').files[0];
-        const type = document.getElementById('convertType').value;
-        if (!file) { alert("اختر ملفاً أولاً"); return; }
-        document.getElementById('convertResult').innerHTML = "جاري التحويل...";
-        if (type === 'img2pdf') {
-            const img = new Image();
-            img.src = URL.createObjectURL(file);
-            img.onload = async () => {
+        if (!file) { alert('اختر صورة أولاً'); return; }
+        document.getElementById('convertResult').innerHTML = '<p>⏳ جاري التحويل...</p>';
+        
+        const img = new Image();
+        img.src = URL.createObjectURL(file);
+        img.onload = async () => {
+            try {
                 const { PDFDocument } = PDFLib;
                 const pdfDoc = await PDFDocument.create();
                 const page = pdfDoc.addPage([img.width, img.height]);
                 const imgBytes = await fetch(img.src).then(res => res.arrayBuffer());
-                const pdfImage = await pdfDoc.embedPng(imgBytes);
-                page.drawImage(pdfImage, { x: 0, y: 0, width: img.width, height: img.height });
+                const pdfImg = await pdfDoc.embedPng(imgBytes);
+                page.drawImage(pdfImg, { x: 0, y: 0, width: img.width, height: img.height });
                 const pdfBytes = await pdfDoc.save();
                 const blob = new Blob([pdfBytes], { type: 'application/pdf' });
                 const url = URL.createObjectURL(blob);
-                document.getElementById('convertResult').innerHTML = `<a href="${url}" download="converted.pdf" style="color:#60a5fa;">✅ تحميل الملف المحول (PDF)</a>`;
-            };
-        }
+                document.getElementById('convertResult').innerHTML = `<a href="${url}" download="converted.pdf">✅ تحميل PDF</a>`;
+            } catch(e) {
+                document.getElementById('convertResult').innerHTML = '<p style="color:red;">❌ فشل التحويل</p>';
+            }
+        };
     }
-    
-    // QR Code for Vodafone Cash
-    const qrImg = document.getElementById('vodafoneQR');
-    if (qrImg) qrImg.src = "https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=01008038818";
-    
-    // Search functionality
-    const searchItems = [
-        { name: "ماكينة زيروكس", link: "#store" },
-        { name: "طباعة", link: "printing.html" },
-        { name: "أدوات مكتبية", link: "stationery.html" }
-    ];
-    const fuse = new Fuse(searchItems, { keys: ["name"], threshold: 0.3 });
     
     function smoothScroll(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); }
     
-    // Make functions global
+    // QR Code
+    document.getElementById('vodafoneQR').src = "https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=01008038818";
+    
+    // جعل الدوال عالمية
     window.addToCart = addToCart;
     window.updateCartQty = updateCartQty;
     window.removeFromCart = removeFromCart;
@@ -655,13 +583,12 @@
     window.forgetPassword = forgetPassword;
     window.openAuthModal = openAuthModal;
     window.closeAuthModal = closeAuthModal;
-    window.removeBackground = removeBackground;
-    window.enhanceDocument = enhanceDocument;
-    window.convertFile = convertFile;
+    window.removeBackgroundFast = removeBackgroundFast;
+    window.enhanceDocumentFast = enhanceDocumentFast;
+    window.convertImageToPdf = convertImageToPdf;
     window.smoothScroll = smoothScroll;
     
     renderProducts();
-    updateCartUI();
 </script>
 </body>
 </html>
